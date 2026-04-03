@@ -15,15 +15,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── Simple file-based order storage (no DB needed for start) ──
+// ── Simple file-based order storage ──
 const ORDERS_FILE = path.join(__dirname, 'data', 'orders.json');
+
 function readOrders() {
   if (!fs.existsSync(ORDERS_FILE)) return [];
   return JSON.parse(fs.readFileSync(ORDERS_FILE, 'utf8'));
 }
+
 function saveOrders(orders) {
   fs.mkdirSync(path.dirname(ORDERS_FILE), { recursive: true });
   fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2));
+}
+
+function isAdmin(req) {
+  const { secret } = req.query;
+  return secret === process.env.ADMIN_SECRET || secret === 'editkori2025';
 }
 
 // ── Routes ──────────────────────────────────────────────────
@@ -33,7 +40,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// POST new order
+// Admin Panel Page
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// POST — new order
 app.post('/api/orders', (req, res) => {
   const { name, email, phone, category, length, speed, driveLink, instructions } = req.body;
   if (!name || !email || !category) {
@@ -52,21 +64,15 @@ app.post('/api/orders', (req, res) => {
   res.json({ success: true, orderId: order.id, message: 'Order received! We will contact you within 2 hours.' });
 });
 
-// GET all orders (admin)
+// GET — all orders (admin)
 app.get('/api/orders', (req, res) => {
-  const { secret } = req.query;
-  if (secret !== process.env.ADMIN_SECRET && secret !== 'editkori2025') {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' });
   res.json(readOrders());
 });
 
-// PATCH update order status (admin)
+// PATCH — update order status (admin)
 app.patch('/api/orders/:id', (req, res) => {
-  const { secret } = req.query;
-  if (secret !== process.env.ADMIN_SECRET && secret !== 'editkori2025') {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' });
   const orders = readOrders();
   const idx = orders.findIndex(o => o.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Order not found' });
@@ -75,8 +81,21 @@ app.patch('/api/orders/:id', (req, res) => {
   res.json({ success: true, order: orders[idx] });
 });
 
+// DELETE — remove order (admin)
+app.delete('/api/orders/:id', (req, res) => {
+  if (!isAdmin(req)) return res.status(401).json({ error: 'Unauthorized' });
+  let orders = readOrders();
+  const idx = orders.findIndex(o => o.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Order not found' });
+  const deleted = orders.splice(idx, 1)[0];
+  saveOrders(orders);
+  console.log(`🗑️ Order deleted: ${deleted.id} (${deleted.name})`);
+  res.json({ success: true, deleted: deleted.id });
+});
+
 // ── Start ───────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n🎬 EditKori server running at http://localhost:${PORT}`);
-  console.log(`📦 Orders API: http://localhost:${PORT}/api/orders?secret=editkori2025\n`);
+  console.log(`🔧 Admin Panel:  http://localhost:${PORT}/admin`);
+  console.log(`📦 Orders API:   http://localhost:${PORT}/api/orders?secret=editkori2025\n`);
 });
