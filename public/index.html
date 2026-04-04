@@ -2850,16 +2850,9 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 /* ── Config ── */
-const firebaseConfig = {
-  apiKey:            "AIzaSyA_fv9NrThoWjKLCE780Ua7FWFIgdZ5IkM",
-  authDomain:        "editkori-21830.firebaseapp.com",
-  databaseURL:       "https://editkori-21830-default-rtdb.firebaseio.com",
-  projectId:         "editkori-21830",
-  storageBucket:     "editkori-21830.firebasestorage.app",
-  messagingSenderId: "856421720283",
-  appId:             "1:856421720283:web:88dd5643c9d6c694426cfe",
-  measurementId:     "G-4V5VT0298P"
-};
+// ✅ SECURE: Server থেকে config আনো
+const _cfgRes        = await fetch('/api/config');
+const firebaseConfig = await _cfgRes.json();
 
 const app      = initializeApp(firebaseConfig);
 const analytics= getAnalytics(app);
@@ -2911,17 +2904,11 @@ async function loadMyOrders(user) {
   };
 
   try {
-    // fetch from server.js API — filter by userEmail
-    const res = await fetch('/api/orders?secret=editkori2025');
+    // ✅ SECURE: নিজের orders, admin secret লাগে না
+    const _em = encodeURIComponent(user.email || '');
+    const res = await fetch(`/api/myorders?email=${_em}`);
     if (!res.ok) throw new Error();
-    const all = await res.json();
-
-    // filter orders belonging to this user
-    const myOrds = all.filter(o =>
-      o.userId === user.uid ||
-      (o.userEmail && o.userEmail === user.email) ||
-      (o.email && o.email === user.email)
-    );
+    const myOrds = await res.json();
 
     // update mini stats
     document.getElementById('moTotal').textContent  = myOrds.length;

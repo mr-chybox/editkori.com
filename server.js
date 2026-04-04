@@ -1,7 +1,7 @@
 // ============================================================
-// EditKori.com — Node.js Express Server
-// Run: node server.js
+// EditKori.com — Express Server  ✅ SECURE VERSION
 // ============================================================
+require('dotenv').config();
 
 const express = require('express');
 const path    = require('path');
@@ -10,15 +10,16 @@ const fs      = require('fs');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// ── Change this to a strong secret password! ────────────────
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'editkori2025';
+const ADMIN_SECRET = process.env.ADMIN_SECRET;
+if (!ADMIN_SECRET) {
+  console.error('❌  ADMIN_SECRET .env-এ নেই — server বন্ধ হচ্ছে।');
+  process.exit(1);
+}
 
-// ── Middleware ──────────────────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── File-based order storage ────────────────────────────────
 const ORDERS_FILE = path.join(__dirname, 'data', 'orders.json');
 
 function readOrders() {
@@ -41,23 +42,35 @@ function checkAuth(req, res) {
   return true;
 }
 
-// ── Routes ──────────────────────────────────────────────────
+// ── ✅ Firebase config endpoint ─────────────────────────────
+// index.html এখানে থেকে config নেয় — HTML-এ আর hardcode নেই
+app.get('/api/config', (req, res) => {
+  res.json({
+    apiKey:            process.env.FIREBASE_API_KEY,
+    authDomain:        process.env.FIREBASE_AUTH_DOMAIN,
+    databaseURL:       process.env.FIREBASE_DATABASE_URL,
+    projectId:         process.env.FIREBASE_PROJECT_ID,
+    storageBucket:     process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId:             process.env.FIREBASE_APP_ID,
+    measurementId:     process.env.FIREBASE_MEASUREMENT_ID,
+  });
+});
 
-// Homepage
+// ── Pages ────────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Admin panel
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// POST — submit new order
+// ── POST — নতুন order ────────────────────────────────────────
 app.post('/api/orders', (req, res) => {
   const { name, email, phone, category, length, speed, driveLink, instructions } = req.body;
   if (!name || !email || !category) {
-    return res.status(400).json({ error: 'Name, email and category are required.' });
+    return res.status(400).json({ error: 'Name, email ও category আবশ্যক।' });
   }
   const order = {
     id:           Date.now().toString(),
@@ -74,29 +87,37 @@ app.post('/api/orders', (req, res) => {
   const orders = readOrders();
   orders.unshift(order);
   saveOrders(orders);
-  console.log(`✅ New order from ${name} (${email}) — ${category}`);
+  console.log(`✅ New order: ${name} (${email}) — ${category}`);
   res.json({ success: true, orderId: order.id });
 });
 
-// GET — all orders (admin only)
+// ── GET — সব orders (admin only) ───────────────────────────
 app.get('/api/orders', (req, res) => {
   if (!checkAuth(req, res)) return;
   res.json(readOrders());
 });
 
-// PATCH — update order status (admin only)
+// ── GET — user-এর নিজের orders (admin secret লাগে না) ─────
+app.get('/api/myorders', (req, res) => {
+  const email = req.query.email;
+  if (!email) return res.status(400).json({ error: 'email required' });
+  const all = readOrders();
+  res.json(all.filter(o => o.email === email));
+});
+
+// ── PATCH — order status update (admin only) ───────────────
 app.patch('/api/orders/:id', (req, res) => {
   if (!checkAuth(req, res)) return;
   const orders = readOrders();
   const idx = orders.findIndex(o => o.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Order not found' });
-  if (req.body.status) orders[idx].status = req.body.status;
-  if (req.body.note !== undefined) orders[idx].note = req.body.note;
+  if (req.body.status)            orders[idx].status = req.body.status;
+  if (req.body.note !== undefined) orders[idx].note   = req.body.note;
   saveOrders(orders);
   res.json({ success: true, order: orders[idx] });
 });
 
-// DELETE — remove order (admin only)
+// ── DELETE — order মুছো (admin only) ──────────────────────
 app.delete('/api/orders/:id', (req, res) => {
   if (!checkAuth(req, res)) return;
   let orders = readOrders();
@@ -104,13 +125,11 @@ app.delete('/api/orders/:id', (req, res) => {
   orders = orders.filter(o => o.id !== req.params.id);
   if (orders.length === before) return res.status(404).json({ error: 'Order not found' });
   saveOrders(orders);
-  console.log(`🗑️  Deleted order ${req.params.id}`);
   res.json({ success: true });
 });
 
-// ── Start ───────────────────────────────────────────────────
+// ── Start ────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🎬 EditKori server → http://localhost:${PORT}`);
-  console.log(`🔐 Admin panel   → http://localhost:${PORT}/admin`);
-  console.log(`📦 Orders API    → http://localhost:${PORT}/api/orders?secret=${ADMIN_SECRET}\n`);
+  console.log(`\n🎬 EditKori → http://localhost:${PORT}`);
+  console.log(`🔐 Admin    → http://localhost:${PORT}/admin\n`);
 });

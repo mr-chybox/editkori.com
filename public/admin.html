@@ -286,7 +286,9 @@ select.fsel option{background:var(--bg2);}
 <div id="tk"><span id="tkIc">✅</span><span id="tkMsg">সম্পন্ন!</span></div>
 
 <script>
-const SECRET = 'editkori2025'; // server.js-এর পাসওয়ার্ডের মতো রাখুন
+// ✅ SECURE: Hardcoded password নেই
+const SECRET = prompt('🔐 Admin Password:') || '';
+if (!SECRET) { document.body.innerHTML='<h2 style="color:red;font-family:sans-serif;text-align:center;padding:3rem">⛔ Access Denied</h2>'; throw new Error('No password'); }
 const API    = '/api/orders';
 
 let orders    = [];
