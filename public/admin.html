@@ -1,1035 +1,557 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>EditKori — Admin Panel</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EditKori — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0a0a0c;
-    --surface: #111114;
-    --border: #1e1e24;
-    --accent: #ff6b2b;
-    --accent2: #ffb347;
-    --text: #e8e8f0;
-    --muted: #5a5a72;
-    --green: #2ecc71;
-    --yellow: #f39c12;
-    --red: #e74c3c;
-    --blue: #3498db;
-    --purple: #9b59b6;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Noise texture overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ── LOGIN SCREEN ── */
-  #loginScreen {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .login-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 3rem 2.5rem;
-    width: min(400px, 90vw);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .login-box::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
-
-  .login-logo {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 0.25rem;
-  }
-
-  .login-logo span { color: var(--accent); }
-
-  .login-sub {
-    color: var(--muted);
-    font-size: 0.85rem;
-    font-family: 'Space Mono', monospace;
-    margin-bottom: 2rem;
-  }
-
-  .login-input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.875rem 1rem;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 1rem;
-  }
-
-  .login-input:focus { border-color: var(--accent); }
-
-  .login-btn {
-    width: 100%;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.875rem;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
-  }
-
-  .login-btn:hover { background: var(--accent2); transform: translateY(-1px); }
-
-  .login-error {
-    color: var(--red);
-    font-size: 0.8rem;
-    font-family: 'Space Mono', monospace;
-    margin-top: 0.75rem;
-    display: none;
-  }
-
-  /* ── MAIN LAYOUT ── */
-  #app { display: none; min-height: 100vh; position: relative; z-index: 1; }
-
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .logo {
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-
-  .logo span { color: var(--accent); }
-
-  .header-badge {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 0.25rem 0.75rem;
-    border-radius: 100px;
-  }
-
-  .logout-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.4rem 1rem;
-    border-radius: 8px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .logout-btn:hover { border-color: var(--red); color: var(--red); }
-
-  main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
-
-  /* ── STATS ── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s;
-  }
-
-  .stat-card:hover { transform: translateY(-2px); }
-
-  .stat-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-  }
-
-  .stat-card.total::after { background: var(--accent); }
-  .stat-card.pending::after { background: var(--yellow); }
-  .stat-card.confirmed::after { background: var(--green); }
-  .stat-card.done::after { background: var(--blue); }
-  .stat-card.cancelled::after { background: var(--red); }
-
-  .stat-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.5rem;
-  }
-
-  .stat-value {
-    font-size: 2.5rem;
-    font-weight: 800;
-    line-height: 1;
-  }
-
-  .stat-card.total .stat-value { color: var(--accent); }
-  .stat-card.pending .stat-value { color: var(--yellow); }
-  .stat-card.confirmed .stat-value { color: var(--green); }
-  .stat-card.done .stat-value { color: var(--blue); }
-  .stat-card.cancelled .stat-value { color: var(--red); }
-
-  /* ── TOOLBAR ── */
-  .toolbar {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .search-wrap {
-    flex: 1;
-    min-width: 200px;
-    position: relative;
-  }
-
-  .search-wrap svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-  }
-
-  #searchInput {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.85rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  #searchInput:focus { border-color: var(--accent); }
-
-  .filter-select {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-
-  .filter-select:focus { border-color: var(--accent); }
-
-  .refresh-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.25rem;
-    font-family: 'Syne', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .refresh-btn:hover { background: var(--accent2); }
-
-  .refresh-btn.loading svg { animation: spin 0.8s linear infinite; }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── TABLE ── */
-  .table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .table-header-bar {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .table-title {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  .order-count {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-
-  .table-scroll { overflow-x: auto; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 900px;
-  }
-
-  thead tr {
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-  }
-
-  th {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    white-space: nowrap;
-  }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: rgba(255,107,43,0.04); }
-
-  td {
-    padding: 0.9rem 1rem;
-    font-size: 0.875rem;
-    vertical-align: middle;
-  }
-
-  .order-id {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
-
-  .customer-name { font-weight: 600; }
-  .customer-email {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-
-  .category-badge {
-    display: inline-block;
-    padding: 0.25rem 0.65rem;
-    border-radius: 100px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    background: rgba(255,107,43,0.12);
-    color: var(--accent);
-    border: 1px solid rgba(255,107,43,0.2);
-    white-space: nowrap;
-  }
-
-  /* Status badges */
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.7rem;
-    border-radius: 100px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  .status-badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
-  }
-
-  .status-Pending { background: rgba(243,156,18,0.12); color: var(--yellow); border: 1px solid rgba(243,156,18,0.25); }
-  .status-Pending::before { background: var(--yellow); }
-  .status-Confirmed { background: rgba(46,204,113,0.12); color: var(--green); border: 1px solid rgba(46,204,113,0.25); }
-  .status-Confirmed::before { background: var(--green); }
-  .status-Done { background: rgba(52,152,219,0.12); color: var(--blue); border: 1px solid rgba(52,152,219,0.25); }
-  .status-Done::before { background: var(--blue); }
-  .status-Cancelled { background: rgba(231,76,60,0.12); color: var(--red); border: 1px solid rgba(231,76,60,0.25); }
-  .status-Cancelled::before { background: var(--red); }
-  .status-Processing { background: rgba(155,89,182,0.12); color: var(--purple); border: 1px solid rgba(155,89,182,0.25); }
-  .status-Processing::before { background: var(--purple); }
-
-  .status-select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.4rem 0.6rem;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    outline: none;
-    cursor: pointer;
-  }
-
-  .date-text {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
-
-  /* Action buttons */
-  .actions { display: flex; gap: 0.5rem; align-items: center; }
-
-  .action-btn {
-    border: none;
-    border-radius: 6px;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.75rem;
-    font-family: 'Syne', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-
-  .btn-save {
-    background: rgba(46,204,113,0.15);
-    color: var(--green);
-    border: 1px solid rgba(46,204,113,0.25);
-  }
-
-  .btn-save:hover { background: rgba(46,204,113,0.3); }
-
-  .btn-delete {
-    background: rgba(231,76,60,0.1);
-    color: var(--red);
-    border: 1px solid rgba(231,76,60,0.2);
-  }
-
-  .btn-delete:hover { background: rgba(231,76,60,0.25); }
-
-  .btn-view {
-    background: rgba(52,152,219,0.1);
-    color: var(--blue);
-    border: 1px solid rgba(52,152,219,0.2);
-  }
-
-  .btn-view:hover { background: rgba(52,152,219,0.25); }
-
-  /* ── EMPTY / LOADING ── */
-  .empty-state {
-    padding: 4rem 2rem;
-    text-align: center;
-    color: var(--muted);
-  }
-
-  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
-  .empty-state p { font-family: 'Space Mono', monospace; font-size: 0.85rem; }
-
-  /* ── MODAL ── */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-  }
-
-  .modal-backdrop.open { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    width: min(600px, 95vw);
-    max-height: 85vh;
-    overflow-y: auto;
-    transform: scale(0.95);
-    transition: transform 0.2s;
-  }
-
-  .modal-backdrop.open .modal { transform: scale(1); }
-
-  .modal-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    background: var(--surface);
-  }
-
-  .modal-title { font-weight: 700; font-size: 1.1rem; }
-
-  .modal-close {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .modal-close:hover { border-color: var(--red); color: var(--red); }
-
-  .modal-body { padding: 1.5rem; }
-
-  .detail-row {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    align-items: flex-start;
-  }
-
-  .detail-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    min-width: 110px;
-    padding-top: 0.1rem;
-  }
-
-  .detail-value { font-size: 0.9rem; word-break: break-all; }
-
-  .detail-link { color: var(--accent); text-decoration: none; }
-  .detail-link:hover { text-decoration: underline; }
-
-  .instructions-box {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem;
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    white-space: pre-wrap;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  /* ── CONFIRM DELETE MODAL ── */
-  #confirmModal .modal {
-    width: min(400px, 90vw);
-    text-align: center;
-  }
-
-  .confirm-icon { font-size: 3rem; margin-bottom: 1rem; }
-  .confirm-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-  .confirm-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; }
-
-  .confirm-actions { display: flex; gap: 1rem; justify-content: center; }
-
-  .btn-cancel-del {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Syne', sans-serif;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-
-  .btn-confirm-del {
-    background: var(--red);
-    border: none;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    transition: all 0.2s;
-  }
-
-  .btn-confirm-del:hover { opacity: 0.85; }
-
-  /* Toast */
-  #toast {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .toast-msg {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.875rem 1.25rem;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    min-width: 260px;
-    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-    border-left: 3px solid var(--accent);
-  }
-
-  .toast-msg.success { border-left-color: var(--green); }
-  .toast-msg.error { border-left-color: var(--red); }
-
-  @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-
-  @keyframes fadeOut {
-    to { opacity: 0; transform: translateX(100%); }
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --or:#f97316;--am:#fbbf24;
+  --bg0:#04040c;--bg1:#080812;--bg2:#0e0e1c;--bg3:#141428;
+  --txt:#eeeef8;--mu:#7070a0;
+  --gn:#22c55e;--rd:#ef4444;--bl:#3b82f6;--yw:#eab308;
+  --br:rgba(249,115,22,.1);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg0);color:var(--txt);font-family:'Outfit',sans-serif;min-height:100vh;}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;z-index:9999;background:var(--bg0);display:flex;align-items:center;justify-content:center;}
+.lbox{background:var(--bg2);border:1px solid var(--br);border-radius:24px;padding:48px 44px;width:100%;max-width:400px;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,.7);}
+.lbox-icon{width:64px;height:64px;border-radius:18px;background:linear-gradient(145deg,#fbbf24,#f97316);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 0 32px rgba(249,115,22,.4);}
+.lbox-icon svg{fill:#000;}
+.lbox h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.04em;margin-bottom:6px;}
+.lbox p{font-size:13px;color:var(--mu);margin-bottom:28px;}
+.linput{width:100%;background:var(--bg1);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 16px;color:var(--txt);font-family:'Outfit',sans-serif;font-size:14px;outline:none;margin-bottom:12px;transition:border-color .3s;}
+.linput:focus{border-color:rgba(249,115,22,.5);}
+.lbtn{width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,var(--or),var(--am));color:#000;font-weight:800;font-size:15px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform .2s,box-shadow .3s;}
+.lbtn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(249,115,22,.4);}
+.lerr{color:#ef4444;font-size:13px;margin-top:10px;min-height:20px;}
+
+/* SIDEBAR */
+#sb{position:fixed;top:0;left:0;bottom:0;width:230px;background:var(--bg1);border-right:1px solid var(--br);display:flex;flex-direction:column;z-index:100;padding:22px 0;}
+.sb-top{padding:0 20px 22px;border-bottom:1px solid var(--br);margin-bottom:6px;}
+.sb-logo{display:flex;align-items:center;gap:10px;}
+.sb-logo-ic{width:38px;height:38px;border-radius:10px;background:linear-gradient(145deg,#fbbf24,#f97316);display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(249,115,22,.35);flex-shrink:0;}
+.sb-logo-ic svg{fill:#000;}
+.sb-logo-name{font-size:15px;font-weight:800;}
+.sb-logo-name span{color:var(--or);}
+.sb-logo-sub{font-size:8px;color:#404060;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;}
+.sb-sec{font-size:9px;font-weight:700;color:rgba(112,112,160,.4);letter-spacing:.2em;text-transform:uppercase;padding:14px 20px 6px;}
+.sbl{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;font-weight:500;color:var(--mu);cursor:pointer;border-left:2px solid transparent;transition:all .22s;user-select:none;}
+.sbl:hover{color:var(--txt);background:rgba(249,115,22,.04);}
+.sbl.active{color:var(--or);border-left-color:var(--or);background:rgba(249,115,22,.07);}
+.sbl-ic{font-size:17px;width:20px;text-align:center;flex-shrink:0;}
+.sbl-badge{margin-left:auto;background:var(--or);color:#000;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.sb-foot{margin-top:auto;padding:16px 20px;border-top:1px solid var(--br);}
+.sb-out{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);cursor:pointer;transition:color .2s;}
+.sb-out:hover{color:#ef4444;}
+
+/* MAIN */
+#main{margin-left:230px;min-height:100vh;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--br);background:rgba(4,4,12,.7);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50;}
+.tb-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:var(--gn);box-shadow:0 0 7px var(--gn);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 4px var(--gn)}50%{box-shadow:0 0 14px var(--gn)}}
+.tb-clock{font-size:12px;color:var(--mu);}
+.tb-refresh{padding:7px 14px;border-radius:8px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);color:var(--or);font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.tb-refresh:hover{background:rgba(249,115,22,.2);}
+
+.content{padding:24px 28px;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.sc{background:var(--bg2);border:1px solid var(--br);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden;transition:transform .3s;}
+.sc:hover{transform:translateY(-3px);}
+.sc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(249,115,22,.04),transparent);pointer-events:none;}
+.sc-ic{position:absolute;top:18px;right:18px;font-size:24px;opacity:.4;}
+.sc-lbl{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;}
+.sc-val{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;margin-bottom:3px;}
+.sc-sub{font-size:11px;color:var(--mu);}
+.c-or{color:var(--or);}.c-bl{color:#60a5fa;}.c-yw{color:#fbbf24;}.c-gn{color:var(--gn);}
+
+/* PANEL */
+.panel{background:var(--bg1);border:1px solid var(--br);border-radius:18px;overflow:hidden;margin-bottom:20px;}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--br);}
+.ph-title{font-size:14px;font-weight:700;}
+.ph-acts{display:flex;gap:8px;align-items:center;}
+.sinput{background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:8px 13px;color:var(--txt);font-family:'Outfit',sans-serif;font-size:12px;outline:none;width:180px;transition:border-color .3s;}
+.sinput:focus{border-color:rgba(249,115,22,.4);}
+.sinput::placeholder{color:var(--mu);}
+select.fsel{background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:8px 13px;color:var(--txt);font-family:'Outfit',sans-serif;font-size:12px;outline:none;cursor:pointer;}
+select.fsel option{background:var(--bg2);}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{padding:11px 15px;text-align:left;font-size:9px;font-weight:700;color:rgba(112,112,160,.55);text-transform:uppercase;letter-spacing:.14em;border-bottom:1px solid var(--br);}
+.tbl td{padding:13px 15px;font-size:12px;border-bottom:1px solid rgba(249,115,22,.04);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(249,115,22,.02);}
+.cc{display:flex;flex-direction:column;gap:2px;}
+.cn{font-weight:600;font-size:13px;}
+.ce{font-size:11px;color:var(--mu);}
+
+/* Status pill */
+.sp{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;}
+.sp-new      {background:rgba(59,130,246,.14);color:#60a5fa;border:1px solid rgba(59,130,246,.22);}
+.sp-progress {background:rgba(234,179,8,.14);color:#fbbf24;border:1px solid rgba(234,179,8,.22);}
+.sp-done     {background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.22);}
+.sp-cancelled{background:rgba(239,68,68,.14);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.sp select{background:transparent;border:none;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;cursor:pointer;outline:none;padding:0;}
+.sp-new select{color:#60a5fa;}.sp-progress select{color:#fbbf24;}.sp-done select{color:#4ade80;}.sp-cancelled select{color:#f87171;}
+
+.ctag{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.18);color:var(--or);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;}
+.dlink{font-size:11px;color:#60a5fa;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;}
+.ab{padding:5px 11px;border-radius:7px;font-size:10px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform .2s;}
+.ab:hover{transform:scale(1.07);}
+.ab-view{background:rgba(59,130,246,.14);color:#60a5fa;border:1px solid rgba(59,130,246,.2);}
+.ab-del{background:rgba(239,68,68,.14);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+
+.empty{text-align:center;padding:50px 20px;color:var(--mu);}
+.empty-ic{font-size:40px;margin-bottom:12px;opacity:.4;}
+.spin{width:36px;height:36px;border-radius:50%;border:3px solid rgba(249,115,22,.15);border-top-color:var(--or);animation:sp .7s linear infinite;margin:50px auto;}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
+.mbg.open{display:flex;}
+.mbox{background:var(--bg2);border:1px solid var(--br);border-radius:20px;padding:32px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.7);}
+.mclose{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:var(--txt);font-size:17px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;}
+.mclose:hover{background:rgba(239,68,68,.25);}
+.mt{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;margin-bottom:3px;}
+.ms{font-size:11px;color:var(--mu);margin-bottom:20px;}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.mf label{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:4px;}
+.mf .mv{font-size:13px;font-weight:500;word-break:break-all;}
+.mf.full{grid-column:1/-1;}
+.minst{background:var(--bg1);border:1px solid var(--br);border-radius:10px;padding:12px;font-size:12px;color:rgba(238,238,248,.7);line-height:1.65;}
+.mnote{width:100%;background:var(--bg1);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 13px;color:var(--txt);font-family:'Outfit',sans-serif;font-size:12px;outline:none;resize:vertical;min-height:70px;line-height:1.55;transition:border-color .3s;margin-top:4px;}
+.mnote:focus{border-color:rgba(249,115,22,.4);}
+.snbtn{margin-top:8px;padding:9px 20px;border-radius:9px;background:linear-gradient(135deg,var(--or),var(--am));color:#000;font-weight:700;font-size:12px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform .2s;}
+.snbtn:hover{transform:scale(1.04);}
+.msr{display:flex;gap:7px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--br);}
+.msb{padding:7px 16px;border-radius:9px;font-size:11px;font-weight:700;border:1px solid;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.msb:not(.sel){opacity:.45;}.msb:hover,.msb.sel{opacity:1;}
+.msb-new   {background:rgba(59,130,246,.1);color:#60a5fa;border-color:rgba(59,130,246,.25);}
+.msb-prog  {background:rgba(234,179,8,.1);color:#fbbf24;border-color:rgba(234,179,8,.25);}
+.msb-done  {background:rgba(34,197,94,.1);color:#4ade80;border-color:rgba(34,197,94,.25);}
+.msb-cancel{background:rgba(239,68,68,.1);color:#f87171;border-color:rgba(239,68,68,.25);}
+
+/* ANALYTICS */
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+.ac{background:var(--bg1);border:1px solid var(--br);border-radius:18px;padding:20px;}
+.ac-title{font-size:13px;font-weight:700;margin-bottom:14px;}
+.brow{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.blbl{font-size:11px;color:var(--mu);width:120px;flex-shrink:0;text-align:right;}
+.bwrap{flex:1;height:20px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;}
+.bfill{height:100%;background:linear-gradient(90deg,var(--or),var(--am));border-radius:5px;transition:width .8s cubic-bezier(.16,1,.3,1);}
+.bnum{font-size:11px;font-weight:700;color:var(--or);width:22px;text-align:right;flex-shrink:0;}
+.dwrap{display:flex;align-items:center;gap:18px;}
+.dleg{display:flex;flex-direction:column;gap:7px;}
+.dli{display:flex;align-items:center;gap:7px;font-size:11px;}
+.ddot{width:9px;height:9px;border-radius:3px;flex-shrink:0;}
+
+/* TOAST */
+#tk{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid rgba(34,197,94,.3);border-radius:11px;padding:12px 18px;font-size:12px;font-weight:600;z-index:99999;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;gap:9px;}
+#tk.show{transform:translateY(0);opacity:1;}
+#tk.err{border-color:rgba(239,68,68,.3);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg1);}
+::-webkit-scrollbar-thumb{background:var(--or);border-radius:4px;}
+.tab-content{display:none;}.tab-content.active{display:block;}
+
+@media(max-width:860px){
+  #sb{width:56px;}
+  .sb-logo-name,.sb-logo-sub,.sb-sec,.sbl span:not(.sbl-ic),.sbl-badge,.sb-out span{display:none;}
+  #main{margin-left:56px;}
+  .stats{grid-template-columns:1fr 1fr;}
+  .agrid{grid-template-columns:1fr;}
+  .mgrid{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">Edit<span>Kori</span></div>
-    <div class="login-sub">// admin panel access</div>
-    <input class="login-input" type="password" id="secretInput" placeholder="Enter admin secret..." />
-    <button class="login-btn" onclick="doLogin()">🔐 Login</button>
-    <div class="login-error" id="loginError">❌ Wrong secret key</div>
+  <div class="lbox">
+    <div class="lbox-icon"><svg viewBox="0 0 12 14" width="22" height="26"><polygon points="0,0 12,7 0,14"/></svg></div>
+    <h2>Admin Panel</h2>
+    <p>editkori.com — Secure Access</p>
+    <input class="linput" type="password" id="lpass" placeholder="Password লিখুন…"/>
+    <button class="lbtn" onclick="login()">Dashboard-এ প্রবেশ করুন →</button>
+    <div class="lerr" id="lerr"></div>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <header>
-    <div class="logo">Edit<span>Kori</span></div>
-    <div class="header-badge">ADMIN PANEL</div>
-    <button class="logout-btn" onclick="logout()">Logout →</button>
-  </header>
-
-  <main>
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card total">
-        <div class="stat-label">Total Orders</div>
-        <div class="stat-value" id="statTotal">0</div>
-      </div>
-      <div class="stat-card pending">
-        <div class="stat-label">Pending</div>
-        <div class="stat-value" id="statPending">0</div>
-      </div>
-      <div class="stat-card confirmed">
-        <div class="stat-label">Confirmed</div>
-        <div class="stat-value" id="statConfirmed">0</div>
-      </div>
-      <div class="stat-card done">
-        <div class="stat-label">Done</div>
-        <div class="stat-value" id="statDone">0</div>
-      </div>
-      <div class="stat-card cancelled">
-        <div class="stat-label">Cancelled</div>
-        <div class="stat-value" id="statCancelled">0</div>
-      </div>
+<!-- SIDEBAR -->
+<div id="sb">
+  <div class="sb-top">
+    <div class="sb-logo">
+      <div class="sb-logo-ic"><svg viewBox="0 0 12 14" width="15" height="18"><polygon points="0,0 12,7 0,14"/></svg></div>
+      <div><div class="sb-logo-name">editk<span>o</span>ri</div><div class="sb-logo-sub">Admin</div></div>
     </div>
-
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <div class="search-wrap">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input id="searchInput" type="text" placeholder="Search name, email, category..." oninput="filterOrders()" />
-      </div>
-      <select class="filter-select" id="statusFilter" onchange="filterOrders()">
-        <option value="">All Status</option>
-        <option value="Pending">Pending</option>
-        <option value="Confirmed">Confirmed</option>
-        <option value="Processing">Processing</option>
-        <option value="Done">Done</option>
-        <option value="Cancelled">Cancelled</option>
-      </select>
-      <button class="refresh-btn" id="refreshBtn" onclick="loadOrders()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
-        </svg>
-        Refresh
-      </button>
-    </div>
-
-    <!-- Table -->
-    <div class="table-wrap">
-      <div class="table-header-bar">
-        <div class="table-title">Orders</div>
-        <div class="order-count" id="orderCount">Loading...</div>
-      </div>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Customer</th>
-              <th>Category</th>
-              <th>Speed</th>
-              <th>Status</th>
-              <th>Change Status</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="ordersBody">
-            <tr><td colspan="8">
-              <div class="empty-state">
-                <div class="icon">⏳</div>
-                <p>Loading orders...</p>
-              </div>
-            </td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
+  </div>
+  <div class="sb-sec">মেনু</div>
+  <div class="sbl active" onclick="goTab('orders',this)"><span class="sbl-ic">📋</span><span>সব অর্ডার</span><span class="sbl-badge" id="newBadge">0</span></div>
+  <div class="sbl" onclick="goTab('analytics',this)"><span class="sbl-ic">📊</span><span>Analytics</span></div>
+  <div class="sb-sec">স্ট্যাটাস</div>
+  <div class="sbl" onclick="sideFilter('new',this)"><span class="sbl-ic">🆕</span><span>নতুন অর্ডার</span></div>
+  <div class="sbl" onclick="sideFilter('in-progress',this)"><span class="sbl-ic">⚙️</span><span>কাজ চলছে</span></div>
+  <div class="sbl" onclick="sideFilter('done',this)"><span class="sbl-ic">✅</span><span>সম্পন্ন</span></div>
+  <div class="sbl" onclick="sideFilter('cancelled',this)"><span class="sbl-ic">❌</span><span>বাতিল</span></div>
+  <div class="sb-foot"><div class="sb-out" onclick="logout()"><span style="font-size:17px;">🚪</span><span>Logout</span></div></div>
 </div>
 
-<!-- ORDER DETAIL MODAL -->
-<div class="modal-backdrop" id="detailModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Order Details</div>
-      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+<!-- MAIN -->
+<div id="main">
+  <div class="topbar">
+    <div class="tb-title" id="pgTitle">সব অর্ডার</div>
+    <div class="tb-right">
+      <div class="tb-dot"></div>
+      <div class="tb-clock" id="clk">--:--</div>
+      <button class="tb-refresh" onclick="loadOrders()">🔄 Refresh</button>
     </div>
-    <div class="modal-body" id="detailBody"></div>
+  </div>
+  <div class="content">
+
+    <!-- ORDERS TAB -->
+    <div class="tab-content active" id="tabOrders">
+      <div class="stats">
+        <div class="sc"><div class="sc-ic">📦</div><div class="sc-lbl">মোট অর্ডার</div><div class="sc-val c-or" id="stTotal">0</div><div class="sc-sub">সব সময়</div></div>
+        <div class="sc"><div class="sc-ic">🆕</div><div class="sc-lbl">নতুন</div><div class="sc-val c-bl" id="stNew">0</div><div class="sc-sub">অপেক্ষায়</div></div>
+        <div class="sc"><div class="sc-ic">⚙️</div><div class="sc-lbl">কাজ চলছে</div><div class="sc-val c-yw" id="stProg">0</div><div class="sc-sub">এডিট হচ্ছে</div></div>
+        <div class="sc"><div class="sc-ic">✅</div><div class="sc-lbl">সম্পন্ন</div><div class="sc-val c-gn" id="stDone">0</div><div class="sc-sub">ডেলিভারি হয়েছে</div></div>
+      </div>
+      <div class="panel">
+        <div class="ph">
+          <div class="ph-title">অর্ডার লিস্ট</div>
+          <div class="ph-acts">
+            <input class="sinput" id="srch" type="text" placeholder="🔍 নাম বা ইমেইল…" oninput="renderTable()"/>
+            <select class="fsel" id="stFilt" onchange="renderTable()">
+              <option value="all">সব স্ট্যাটাস</option>
+              <option value="new">নতুন</option>
+              <option value="in-progress">কাজ চলছে</option>
+              <option value="done">সম্পন্ন</option>
+              <option value="cancelled">বাতিল</option>
+            </select>
+          </div>
+        </div>
+        <div id="tblWrap"><div class="spin"></div></div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div class="tab-content" id="tabAnalytics">
+      <div class="agrid">
+        <div class="ac"><div class="ac-title">📹 সার্ভিস অনুযায়ী</div><div id="barCat"></div></div>
+        <div class="ac">
+          <div class="ac-title">🎯 স্ট্যাটাস ভাগ</div>
+          <div class="dwrap">
+            <svg width="120" height="120" viewBox="0 0 120 120" id="donut">
+              <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="18"/>
+            </svg>
+            <div class="dleg" id="dleg"></div>
+          </div>
+        </div>
+        <div class="ac"><div class="ac-title">⚡ ডেলিভারি স্পিড</div><div id="barSpd"></div></div>
+        <div class="ac"><div class="ac-title">🎬 ভিডিও দৈর্ঘ্য</div><div id="barLen"></div></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
-<div class="modal-backdrop" id="confirmModal">
-  <div class="modal">
-    <div class="modal-body" style="padding:2rem">
-      <div class="confirm-icon">🗑️</div>
-      <div class="confirm-title">Delete Order?</div>
-      <div class="confirm-sub">This action cannot be undone.</div>
-      <div class="confirm-actions">
-        <button class="btn-cancel-del" onclick="closeModal('confirmModal')">Cancel</button>
-        <button class="btn-confirm-del" id="confirmDelBtn">Delete</button>
-      </div>
-    </div>
+<!-- MODAL -->
+<div class="mbg" id="mbg" onclick="if(event.target===this)closeMod()">
+  <div class="mbox">
+    <div class="mclose" onclick="closeMod()">✕</div>
+    <div class="mt" id="mName">অর্ডার বিস্তারিত</div>
+    <div class="ms" id="mDate">—</div>
+    <div class="mgrid" id="mGrid"></div>
+    <div style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px;">নির্দেশনা</div>
+    <div class="minst" id="mInst">—</div>
+    <div style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.12em;margin-top:14px;margin-bottom:4px;">🗒️ Admin নোট</div>
+    <textarea class="mnote" id="mNote" placeholder="এখানে নোট লিখুন…"></textarea>
+    <button class="snbtn" id="mSaveBtn">💾 নোট সেভ করুন</button>
+    <div class="msr" id="mSr"></div>
   </div>
 </div>
 
 <!-- TOAST -->
-<div id="toast"></div>
+<div id="tk"><span id="tkIc">✅</span><span id="tkMsg">সম্পন্ন!</span></div>
 
 <script>
-  let SECRET = '';
-  let allOrders = [];
-  let deleteTargetId = null;
+const SECRET = 'editkori2025'; // server.js-এর পাসওয়ার্ডের মতো রাখুন
+const API    = '/api/orders';
 
-  // ── LOGIN ──
-  document.getElementById('secretInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
+let orders    = [];
+let curFilter = 'all';
+let openId    = null;
+
+/* ── LOGIN ── */
+function login() {
+  const p = document.getElementById('lpass').value.trim();
+  if (p === SECRET) {
+    document.getElementById('loginScreen').style.display = 'none';
+    loadOrders();
+    setInterval(() => {
+      document.getElementById('clk').textContent =
+        new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    }, 1000);
+  } else {
+    const e = document.getElementById('lerr');
+    e.textContent = '❌ পাসওয়ার্ড ভুল।';
+    setTimeout(() => e.textContent = '', 2500);
+  }
+}
+function logout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('lpass').value = '';
+}
+document.getElementById('lpass').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+
+/* ── LOAD ── */
+async function loadOrders() {
+  document.getElementById('tblWrap').innerHTML = '<div class="spin"></div>';
+  try {
+    const res = await fetch(API + '?secret=' + SECRET);
+    if (!res.ok) throw new Error();
+    orders = await res.json();
+    renderAll();
+  } catch {
+    document.getElementById('tblWrap').innerHTML =
+      '<div class="empty"><div class="empty-ic">⚠️</div><div>Server connect করতে পারছি না।<br><small>server.js চালু আছে কি?</small></div></div>';
+  }
+}
+
+function renderAll() {
+  const n = v => orders.filter(o => o.status === v).length;
+  document.getElementById('stTotal').textContent = orders.length;
+  document.getElementById('stNew').textContent   = n('new');
+  document.getElementById('stProg').textContent  = n('in-progress');
+  document.getElementById('stDone').textContent  = n('done');
+  document.getElementById('newBadge').textContent = n('new');
+  renderTable();
+  if (document.getElementById('tabAnalytics').classList.contains('active')) renderCharts();
+}
+
+/* ── TABLE ── */
+function renderTable() {
+  const srch  = (document.getElementById('srch').value || '').toLowerCase();
+  const sfilt = document.getElementById('stFilt').value;
+  const filt  = curFilter !== 'all' ? curFilter : sfilt;
+
+  const rows = orders.filter(o => {
+    const ms = filt === 'all' || o.status === filt;
+    const mq = !srch ||
+      (o.name||'').toLowerCase().includes(srch) ||
+      (o.email||'').toLowerCase().includes(srch) ||
+      (o.category||'').toLowerCase().includes(srch);
+    return ms && mq;
   });
 
-  function doLogin() {
-    const val = document.getElementById('secretInput').value.trim();
-    if (!val) return;
-    SECRET = val;
-    loadOrders(true);
+  const wrap = document.getElementById('tblWrap');
+  if (!rows.length) {
+    wrap.innerHTML = '<div class="empty"><div class="empty-ic">📭</div><div>কোনো অর্ডার পাওয়া যায়নি।</div></div>';
+    return;
   }
 
-  function logout() {
-    SECRET = '';
-    allOrders = [];
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
-  }
+  const sc = {new:'sp-new','in-progress':'sp-progress',done:'sp-done',cancelled:'sp-cancelled'};
 
-  // ── LOAD ORDERS ──
-  async function loadOrders(isLogin = false) {
-    const btn = document.getElementById('refreshBtn');
-    btn.classList.add('loading');
+  let h = `<table class="tbl"><thead><tr>
+    <th>#</th><th>ক্লায়েন্ট</th><th>সার্ভিস</th><th>স্পিড</th><th>স্ট্যাটাস</th><th>Drive</th><th>Action</th>
+  </tr></thead><tbody>`;
 
-    try {
-      const res = await fetch(`/api/orders?secret=${encodeURIComponent(SECRET)}`);
-      if (res.status === 401) {
-        if (isLogin) {
-          document.getElementById('loginError').style.display = 'block';
-        } else {
-          showToast('Unauthorized', 'error');
-        }
-        btn.classList.remove('loading');
-        return;
-      }
+  rows.forEach((o, i) => {
+    const cls = sc[o.status] || 'sp-new';
+    const dt  = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+    h += `<tr>
+      <td style="color:var(--mu);font-size:11px;">${i+1}<br/><small>${dt}</small></td>
+      <td><div class="cc">
+        <span class="cn">${x(o.name||'—')}</span>
+        <span class="ce">${x(o.email||'')}</span>
+        ${o.phone?`<span class="ce">📱 ${x(o.phone)}</span>`:''}
+      </div></td>
+      <td><span class="ctag">${x(o.category||'—')}</span></td>
+      <td style="font-size:11px;color:var(--mu);">${x(o.speed||'—')}</td>
+      <td><div class="sp ${cls}">
+        <select onchange="chStatus('${o.id}',this.value)" onclick="event.stopPropagation()">
+          <option value="new"         ${o.status==='new'?'selected':''}>🆕 নতুন</option>
+          <option value="in-progress" ${o.status==='in-progress'?'selected':''}>⚙️ চলছে</option>
+          <option value="done"        ${o.status==='done'?'selected':''}>✅ সম্পন্ন</option>
+          <option value="cancelled"   ${o.status==='cancelled'?'selected':''}>❌ বাতিল</option>
+        </select>
+      </div></td>
+      <td>${o.driveLink?`<a class="dlink" href="${x(o.driveLink)}" target="_blank">🔗 খুলুন</a>`:'<span style="color:var(--mu)">—</span>'}</td>
+      <td style="display:flex;gap:5px;">
+        <button class="ab ab-view" onclick="openMod('${o.id}')">👁 দেখুন</button>
+        <button class="ab ab-del"  onclick="delOrder('${o.id}',event)">🗑</button>
+      </td>
+    </tr>`;
+  });
 
-      allOrders = await res.json();
+  wrap.innerHTML = h + '</tbody></table>';
+}
 
-      if (isLogin) {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        document.getElementById('loginError').style.display = 'none';
-      }
-
-      updateStats();
-      renderOrders(allOrders);
-      if (!isLogin) showToast('Orders refreshed', 'success');
-
-    } catch (err) {
-      showToast('Failed to load orders', 'error');
-    }
-
-    btn.classList.remove('loading');
-  }
-
-  // ── STATS ──
-  function updateStats() {
-    document.getElementById('statTotal').textContent = allOrders.length;
-    document.getElementById('statPending').textContent = allOrders.filter(o => o.status === 'Pending').length;
-    document.getElementById('statConfirmed').textContent = allOrders.filter(o => o.status === 'Confirmed').length;
-    document.getElementById('statDone').textContent = allOrders.filter(o => o.status === 'Done').length;
-    document.getElementById('statCancelled').textContent = allOrders.filter(o => o.status === 'Cancelled').length;
-  }
-
-  // ── FILTER ──
-  function filterOrders() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const st = document.getElementById('statusFilter').value;
-    const filtered = allOrders.filter(o => {
-      const matchQ = !q ||
-        (o.name||'').toLowerCase().includes(q) ||
-        (o.email||'').toLowerCase().includes(q) ||
-        (o.category||'').toLowerCase().includes(q) ||
-        (o.phone||'').toLowerCase().includes(q);
-      const matchS = !st || o.status === st;
-      return matchQ && matchS;
+/* ── STATUS ── */
+async function chStatus(id, status) {
+  try {
+    await fetch(API+'/'+id+'?secret='+SECRET, {
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({status})
     });
-    renderOrders(filtered);
-  }
+    const o = orders.find(o => o.id===id);
+    if (o) o.status = status;
+    renderAll();
+    if (openId === id) refreshModalBtns(id);
+    toast('✅','স্ট্যাটাস আপডেট হয়েছে!');
+  } catch { toast('❌','আপডেট ব্যর্থ।',true); }
+}
 
-  // ── RENDER ──
-  function renderOrders(orders) {
-    const tbody = document.getElementById('ordersBody');
-    document.getElementById('orderCount').textContent = `${orders.length} order${orders.length !== 1 ? 's' : ''}`;
+/* ── DELETE ── */
+async function delOrder(id, e) {
+  e?.stopPropagation();
+  if (!confirm('এই অর্ডারটি চিরতরে মুছে ফেলবেন?')) return;
+  try {
+    await fetch(API+'/'+id+'?secret='+SECRET, {method:'DELETE'});
+    orders = orders.filter(o => o.id !== id);
+    renderAll();
+    if (openId === id) closeMod();
+    toast('🗑️','অর্ডার মুছে ফেলা হয়েছে।');
+  } catch { toast('❌','মুছতে পারা যায়নি।',true); }
+}
 
-    if (!orders.length) {
-      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div><p>No orders found</p></div></td></tr>`;
-      return;
+/* ── MODAL ── */
+function openMod(id) {
+  const o = orders.find(o => o.id===id);
+  if (!o) return;
+  openId = id;
+  const dt = o.createdAt ? new Date(o.createdAt).toLocaleString('en-GB') : '—';
+  document.getElementById('mName').textContent = o.name || 'অর্ডার বিস্তারিত';
+  document.getElementById('mDate').textContent = 'জমা দেওয়া হয়েছে: ' + dt;
+  document.getElementById('mGrid').innerHTML = `
+    <div class="mf"><label>পুরো নাম</label><div class="mv">${x(o.name||'—')}</div></div>
+    <div class="mf"><label>ইমেইল</label><div class="mv">${x(o.email||'—')}</div></div>
+    <div class="mf"><label>WhatsApp</label><div class="mv">${x(o.phone||'—')}</div></div>
+    <div class="mf"><label>ক্যাটাগরি</label><div class="mv"><span class="ctag">${x(o.category||'—')}</span></div></div>
+    <div class="mf"><label>ভিডিও দৈর্ঘ্য</label><div class="mv">${x(o.length||'—')}</div></div>
+    <div class="mf"><label>ডেলিভারি স্পিড</label><div class="mv">${x(o.speed||'—')}</div></div>
+    <div class="mf full"><label>Drive লিংক</label>
+      <div class="mv">${o.driveLink?`<a href="${x(o.driveLink)}" target="_blank" style="color:#60a5fa;">${x(o.driveLink)}</a>`:'—'}</div>
+    </div>`;
+  document.getElementById('mInst').textContent = o.instructions || 'কোনো নির্দেশনা নেই।';
+  document.getElementById('mNote').value = o.note || '';
+  document.getElementById('mSaveBtn').onclick = async () => {
+    const note = document.getElementById('mNote').value;
+    try {
+      await fetch(API+'/'+id+'?secret='+SECRET, {
+        method:'PATCH', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({note})
+      });
+      const ord = orders.find(o => o.id===id);
+      if (ord) ord.note = note;
+      toast('💾','নোট সেভ হয়েছে!');
+    } catch { toast('❌','সেভ ব্যর্থ।',true); }
+  };
+  refreshModalBtns(id);
+  document.getElementById('mbg').classList.add('open');
+}
+
+function refreshModalBtns(id) {
+  const o = orders.find(o => o.id===id);
+  if (!o) return;
+  const st = [
+    {v:'new',l:'🆕 নতুন',c:'msb-new'},
+    {v:'in-progress',l:'⚙️ চলছে',c:'msb-prog'},
+    {v:'done',l:'✅ সম্পন্ন',c:'msb-done'},
+    {v:'cancelled',l:'❌ বাতিল',c:'msb-cancel'}
+  ];
+  document.getElementById('mSr').innerHTML = st.map(s =>
+    `<button class="msb ${s.c} ${o.status===s.v?'sel':''}" onclick="chStatus('${id}','${s.v}')">${s.l}</button>`
+  ).join('');
+}
+
+function closeMod() { document.getElementById('mbg').classList.remove('open'); openId=null; }
+
+/* ── CHARTS ── */
+function renderCharts() {
+  barChart('barCat', orders.map(o => o.category||'Other'));
+  barChart('barSpd', orders.map(o => o.speed||'Standard'));
+  barChart('barLen', orders.map(o => o.length||'Unknown'));
+  const smap = {
+    new:          {color:'#60a5fa',label:'নতুন'},
+    'in-progress':{color:'#fbbf24',label:'চলছে'},
+    done:         {color:'#4ade80',label:'সম্পন্ন'},
+    cancelled:    {color:'#f87171',label:'বাতিল'}
+  };
+  const total = orders.length||1;
+  const circ  = 2*Math.PI*46;
+  let off=0, arcs='', leg='';
+  Object.entries(smap).forEach(([k,s]) => {
+    const cnt  = orders.filter(o=>o.status===k).length;
+    const dash = (cnt/total)*circ;
+    if (dash > 0) {
+      arcs += `<circle cx="60" cy="60" r="46" fill="none" stroke="${s.color}" stroke-width="18"
+        stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-off}"
+        style="transform:rotate(-90deg);transform-origin:60px 60px"/>`;
+      off += dash;
     }
-
-    tbody.innerHTML = orders.map((o, i) => `
-      <tr>
-        <td class="order-id">#${String(i+1).padStart(3,'0')}</td>
-        <td>
-          <div class="customer-name">${esc(o.name)}</div>
-          <div class="customer-email">${esc(o.email)}</div>
-          ${o.phone ? `<div class="customer-email">${esc(o.phone)}</div>` : ''}
-        </td>
-        <td><span class="category-badge">${esc(o.category)}</span></td>
-        <td style="color:var(--muted);font-size:0.8rem;">${o.speed ? esc(o.speed) : '—'}</td>
-        <td><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></td>
-        <td>
-          <select class="status-select" id="sel_${o.id}">
-            <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
-            <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
-            <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
-            <option value="Done" ${o.status==='Done'?'selected':''}>Done</option>
-            <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
-          </select>
-        </td>
-        <td class="date-text">${formatDate(o.createdAt)}</td>
-        <td>
-          <div class="actions">
-            <button class="action-btn btn-save" onclick="saveStatus('${o.id}')">✓ Save</button>
-            <button class="action-btn btn-view" onclick="viewOrder('${o.id}')">👁</button>
-            <button class="action-btn btn-delete" onclick="askDelete('${o.id}')">🗑</button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  // ── UPDATE STATUS ──
-  async function saveStatus(id) {
-    const newStatus = document.getElementById(`sel_${id}`).value;
-    try {
-      const res = await fetch(`/api/orders/${id}?secret=${encodeURIComponent(SECRET)}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (res.ok) {
-        const idx = allOrders.findIndex(o => o.id === id);
-        if (idx !== -1) allOrders[idx].status = newStatus;
-        updateStats();
-        filterOrders();
-        showToast(`Status updated to ${newStatus}`, 'success');
-      } else {
-        showToast('Update failed', 'error');
-      }
-    } catch { showToast('Network error', 'error'); }
-  }
-
-  // ── DELETE ──
-  function askDelete(id) {
-    deleteTargetId = id;
-    document.getElementById('confirmDelBtn').onclick = confirmDelete;
-    openModal('confirmModal');
-  }
-
-  async function confirmDelete() {
-    if (!deleteTargetId) return;
-    try {
-      const res = await fetch(`/api/orders/${deleteTargetId}?secret=${encodeURIComponent(SECRET)}`, {
-        method: 'DELETE'
-      });
-      if (res.ok) {
-        allOrders = allOrders.filter(o => o.id !== deleteTargetId);
-        updateStats();
-        filterOrders();
-        showToast('Order deleted', 'success');
-        closeModal('confirmModal');
-      } else {
-        showToast('Delete failed', 'error');
-      }
-    } catch { showToast('Network error', 'error'); }
-    deleteTargetId = null;
-  }
-
-  // ── VIEW DETAIL ──
-  function viewOrder(id) {
-    const o = allOrders.find(x => x.id === id);
-    if (!o) return;
-    document.getElementById('detailBody').innerHTML = `
-      <div class="detail-row"><div class="detail-label">Order ID</div><div class="detail-value order-id">${o.id}</div></div>
-      <div class="detail-row"><div class="detail-label">Name</div><div class="detail-value">${esc(o.name)}</div></div>
-      <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">${esc(o.email)}</div></div>
-      <div class="detail-row"><div class="detail-label">Phone</div><div class="detail-value">${o.phone ? esc(o.phone) : '—'}</div></div>
-      <div class="detail-row"><div class="detail-label">Category</div><div class="detail-value"><span class="category-badge">${esc(o.category)}</span></div></div>
-      <div class="detail-row"><div class="detail-label">Length</div><div class="detail-value">${o.length ? esc(o.length) : '—'}</div></div>
-      <div class="detail-row"><div class="detail-label">Speed</div><div class="detail-value">${o.speed ? esc(o.speed) : '—'}</div></div>
-      <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge status-${esc(o.status)}">${esc(o.status)}</span></div></div>
-      <div class="detail-row"><div class="detail-label">Date</div><div class="detail-value date-text">${new Date(o.createdAt).toLocaleString()}</div></div>
-      ${o.driveLink ? `<div class="detail-row"><div class="detail-label">Drive Link</div><div class="detail-value"><a class="detail-link" href="${esc(o.driveLink)}" target="_blank">Open Link ↗</a></div></div>` : ''}
-      ${o.instructions ? `<div class="detail-row" style="flex-direction:column;gap:0.5rem"><div class="detail-label">Instructions</div><div class="instructions-box">${esc(o.instructions)}</div></div>` : ''}
-    `;
-    openModal('detailModal');
-  }
-
-  // ── MODAL ──
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-  document.querySelectorAll('.modal-backdrop').forEach(el => {
-    el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+    leg += `<div class="dli"><div class="ddot" style="background:${s.color}"></div>${s.label}: <strong>${cnt}</strong></div>`;
   });
+  document.getElementById('donut').innerHTML =
+    `<circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="18"/>${arcs}`;
+  document.getElementById('dleg').innerHTML = leg;
+}
 
-  // ── TOAST ──
-  function showToast(msg, type = 'info') {
-    const toast = document.getElementById('toast');
-    const el = document.createElement('div');
-    el.className = `toast-msg ${type}`;
-    el.innerHTML = `${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'} ${msg}`;
-    toast.appendChild(el);
-    setTimeout(() => el.remove(), 3200);
-  }
+function barChart(id, vals) {
+  const cnt = {};
+  vals.forEach(v => { cnt[v]=(cnt[v]||0)+1; });
+  const max = Math.max(...Object.values(cnt),1);
+  document.getElementById(id).innerHTML = Object.entries(cnt)
+    .sort((a,b)=>b[1]-a[1]).slice(0,6)
+    .map(([k,v]) => `<div class="brow">
+      <div class="blbl">${x(k)}</div>
+      <div class="bwrap"><div class="bfill" style="width:${(v/max*100).toFixed(0)}%"></div></div>
+      <div class="bnum">${v}</div>
+    </div>`).join('') || '<div style="color:var(--mu);font-size:12px;padding:8px 0;">ডেটা নেই</div>';
+}
 
-  // ── HELPERS ──
-  function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+/* ── TABS ── */
+function goTab(tab, el) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
+  document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+  if(el) el.classList.add('active');
+  curFilter='all'; document.getElementById('stFilt').value='all';
+  document.getElementById('pgTitle').textContent = tab==='orders'?'সব অর্ডার':'Analytics';
+  if(tab==='analytics') renderCharts();
+}
 
-  function formatDate(iso) {
-    const d = new Date(iso);
-    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
-           ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-  }
+function sideFilter(status, el) {
+  curFilter=status; document.getElementById('stFilt').value=status;
+  goTab('orders',null);
+  document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const t={new:'নতুন অর্ডার','in-progress':'কাজ চলছে',done:'সম্পন্ন',cancelled:'বাতিল'};
+  document.getElementById('pgTitle').textContent = t[status]||'অর্ডার';
+  renderTable();
+}
+
+/* ── HELPERS ── */
+function x(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toast(ic, msg, err=false) {
+  const t=document.getElementById('tk');
+  t.classList.toggle('err',err);
+  document.getElementById('tkIc').textContent=ic;
+  document.getElementById('tkMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
 </script>
 </body>
 </html>

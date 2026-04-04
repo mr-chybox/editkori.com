@@ -25,109 +25,252 @@
 
 /* ══ LIGHT MODE OVERRIDES ══ */
 body.light-mode {
-  --bg0:  #f8f7ff;
+  --bg0:  #f5f4fc;
   --bg1:  #ffffff;
-  --bg2:  #f0effe;
-  --bg3:  #e8e6fc;
-  --txt:  #12121e;
-  --muted:#5a5a80;
+  --bg2:  #edeafb;
+  --bg3:  #e4e0f7;
+  --txt:  #0f0f1a;
+  --muted:#5c5c82;
 }
-body.light-mode ::-webkit-scrollbar-track { background: #f0effe; }
+
+/* ── Scrollbar ── */
+body.light-mode ::-webkit-scrollbar-track { background: #edeafb; }
+
+/* ── Navbar ── */
 body.light-mode #navbar.scrolled {
-  background: rgba(248,247,255,.95);
-  border-bottom: 1px solid rgba(249,115,22,.15);
+  background: rgba(245,244,252,.96);
+  border-bottom: 1px solid rgba(249,115,22,.14);
+  box-shadow: 0 2px 20px rgba(0,0,0,.06);
 }
-body.light-mode .logo-name { color: #12121e; }
-body.light-mode .nav-links a { color: rgba(18,18,30,.6); }
-body.light-mode .nav-links a:hover { color: #12121e; }
+body.light-mode .logo-name { color: #0f0f1a; }
+body.light-mode .nav-links a { color: rgba(15,15,26,.55); }
+body.light-mode .nav-links a:hover { color: #0f0f1a; }
+
+/* ── Hero ── */
 body.light-mode .hero-grid-lines {
   background-image:
-    linear-gradient(rgba(249,115,22,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(249,115,22,.06) 1px, transparent 1px);
+    linear-gradient(rgba(249,115,22,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249,115,22,.07) 1px, transparent 1px);
 }
 body.light-mode .hero-glow {
   background:
-    radial-gradient(ellipse 70% 60% at 55% 40%, rgba(249,115,22,.09) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 50% at 85% 75%, rgba(251,191,36,.06) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 60% at 55% 40%, rgba(249,115,22,.10) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 85% 75%, rgba(251,191,36,.07) 0%, transparent 60%);
 }
-body.light-mode .hero-desc { color: rgba(18,18,30,.65); }
-body.light-mode .stat-val { color: #12121e; }
-body.light-mode .stat-label { color: var(--muted); }
-body.light-mode .stat-divider { background: rgba(18,18,30,.12); }
-body.light-mode .section-head .tag { color: rgba(249,115,22,.85); }
-body.light-mode .section-head h2 { color: #12121e; }
-body.light-mode .section-head p { color: var(--muted); }
+body.light-mode .hero-bn1 { color: rgba(15,15,26,.75); }
+body.light-mode .hero-desc { color: rgba(15,15,26,.60); }
+body.light-mode .hero-bn2 {
+  background: linear-gradient(120deg, #0f0f1a 0%, var(--amber) 38%, var(--orange) 65%, #0f0f1a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Stats ── */
+body.light-mode .stat-val { color: #0f0f1a; }
+body.light-mode .stat-lbl { color: var(--muted); }
+body.light-mode .stat + .stat { border-left-color: rgba(15,15,26,.12); }
+
+/* ── Hero card ── */
+body.light-mode .h-card {
+  background: linear-gradient(145deg, #edeafb, #f5f4fc);
+  border: 1px solid rgba(249,115,22,.14);
+  box-shadow: 0 24px 60px rgba(0,0,0,.10);
+}
+body.light-mode .h-card-screen {
+  background: linear-gradient(135deg, #e0ddf7, #d8d5f0);
+}
+body.light-mode .h-card-title { color: #0f0f1a; }
+body.light-mode .h-progress { background: rgba(15,15,26,.08); }
+body.light-mode .badge-edit { background: rgba(249,115,22,.1); color: var(--orange); border-color: rgba(249,115,22,.22); }
+
+/* ── Float badges ── */
+body.light-mode .float-badge {
+  background: rgba(255,255,255,.97);
+  border: 1px solid rgba(249,115,22,.16);
+  box-shadow: 0 8px 28px rgba(0,0,0,.10);
+}
+body.light-mode .fb-val { color: #0f0f1a; }
+body.light-mode .fb-sub { color: var(--muted); }
+
+/* ── Hero logo display (hld) ── */
+body.light-mode .hld-name { color: rgba(15,15,26,.88); }
+body.light-mode .hld-by { color: #8080a8; }
+
+/* ── Secondary button ── */
+body.light-mode .btn-secondary {
+  background: rgba(15,15,26,.05);
+  border: 1px solid rgba(15,15,26,.16);
+  color: rgba(15,15,26,.80);
+}
+body.light-mode .btn-secondary:hover {
+  background: rgba(249,115,22,.08);
+  border-color: rgba(249,115,22,.42);
+  color: #0f0f1a;
+}
+
+/* ── Ticker ── */
+body.light-mode .ticker { background: var(--bg1); border-color: rgba(249,115,22,.10); }
+body.light-mode .ticker-item { color: rgba(15,15,26,.30); }
+
+/* ── Section titles & chips ── */
+body.light-mode .section-title { color: #0f0f1a; }
+body.light-mode .section-chip { color: var(--orange); }
+body.light-mode .section-chip::before,
+body.light-mode .section-chip::after { background: var(--orange); }
+body.light-mode .section-desc { color: var(--muted); }
+
+/* ── Services ── */
+body.light-mode .services-grid {
+  background: rgba(249,115,22,.04);
+  border-color: rgba(249,115,22,.08);
+}
 body.light-mode .srv-card {
-  background: rgba(255,255,255,.85);
-  border: 1px solid rgba(249,115,22,.15);
-  box-shadow: 0 4px 24px rgba(0,0,0,.06);
+  background: #ffffff;
+  border: none;
 }
-body.light-mode .srv-card:hover { box-shadow: 0 8px 40px rgba(249,115,22,.18); }
-body.light-mode .srv-title { color: #12121e; }
+body.light-mode .srv-card:hover {
+  background: #f5f4fc;
+  box-shadow: 0 8px 40px rgba(249,115,22,.14);
+}
+body.light-mode .srv-name { color: #0f0f1a; }
 body.light-mode .srv-desc { color: var(--muted); }
+body.light-mode .srv-num { color: rgba(249,115,22,.30); }
+body.light-mode .srv-icon {
+  background: rgba(249,115,22,.09);
+  border-color: rgba(249,115,22,.18);
+}
+body.light-mode .srv-arrow {
+  background: rgba(249,115,22,.09);
+  border-color: rgba(249,115,22,.22);
+  color: var(--orange);
+}
+
+/* ── Portfolio ── */
 body.light-mode .p-overlay {
-  background: linear-gradient(to top, rgba(248,247,255,.97) 0%, rgba(248,247,255,.5) 45%, transparent 100%);
+  background: linear-gradient(to top, rgba(15,15,26,.90) 0%, rgba(15,15,26,.45) 48%, transparent 100%);
 }
-body.light-mode .p-title { color: #12121e; }
-body.light-mode .step-num { color: rgba(249,115,22,.15); }
-body.light-mode .step-title { color: #12121e; }
-body.light-mode .step-desc { color: var(--muted); }
-body.light-mode .proc-card {
-  background: rgba(255,255,255,.8);
-  border: 1px solid rgba(249,115,22,.12);
-  box-shadow: 0 2px 16px rgba(0,0,0,.05);
-}
-body.light-mode .testi-card {
-  background: rgba(255,255,255,.85);
-  border: 1px solid rgba(249,115,22,.12);
-  box-shadow: 0 4px 20px rgba(0,0,0,.05);
-}
-body.light-mode .testi-text { color: rgba(18,18,30,.75); }
-body.light-mode .testi-name { color: #12121e; }
-body.light-mode .testi-role { color: var(--muted); }
-body.light-mode .order-info { background: rgba(255,255,255,.8); border: 1px solid rgba(249,115,22,.15); }
-body.light-mode .order-title { color: #12121e; }
-body.light-mode .order-sub { color: var(--muted); }
-body.light-mode .feat-title { color: #12121e; }
-body.light-mode .feat-desc { color: var(--muted); }
-body.light-mode .form-group label { color: rgba(18,18,30,.7); }
-body.light-mode .form-group input,
-body.light-mode .form-group select,
-body.light-mode .form-group textarea {
-  background: #ffffff;
-  border: 1px solid rgba(249,115,22,.2);
-  color: #12121e;
-}
-body.light-mode .form-group input::placeholder,
-body.light-mode .form-group textarea::placeholder { color: rgba(18,18,30,.35); }
-body.light-mode footer {
-  background: #ffffff;
-  border-top: 1px solid rgba(249,115,22,.1);
-}
-body.light-mode .footer-desc { color: var(--muted); }
-body.light-mode .footer-heading { color: rgba(18,18,30,.4); }
-body.light-mode .footer-links a { color: var(--muted); }
-body.light-mode .footer-copy { color: rgba(80,80,100,.6); }
-body.light-mode .social-link {
-  border: 1px solid rgba(18,18,30,.12);
-  color: var(--muted);
-}
-body.light-mode #toast { background: #ffffff; border: 1px solid rgba(74,222,128,.3); }
-body.light-mode .toast-msg { color: #12121e; }
-body.light-mode #cta-band {
-  background: linear-gradient(135deg, rgba(249,115,22,.07), rgba(251,191,36,.04));
-  border-top: 1px solid rgba(249,115,22,.15);
-  border-bottom: 1px solid rgba(249,115,22,.15);
-}
-body.light-mode .cta-title { color: #12121e; }
+body.light-mode .p-title { color: #ffffff; }
 body.light-mode .filter-btn {
-  background: rgba(255,255,255,.7);
-  border: 1px solid rgba(249,115,22,.2);
-  color: rgba(18,18,30,.6);
+  background: rgba(255,255,255,.8);
+  border: 1px solid rgba(249,115,22,.18);
+  color: rgba(15,15,26,.60);
 }
 body.light-mode .filter-btn.active,
 body.light-mode .filter-btn:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
-body.light-mode .hld-name { color: rgba(18,18,30,.88); }
+
+/* ── Process ── */
+body.light-mode .proc-num {
+  background: #ffffff;
+  border-color: rgba(249,115,22,.18);
+  box-shadow: 0 2px 14px rgba(0,0,0,.06);
+}
+body.light-mode .proc-step:hover .proc-num { box-shadow: 0 0 32px rgba(249,115,22,.30); }
+body.light-mode .proc-title { color: #0f0f1a; }
+body.light-mode .proc-desc { color: var(--muted); }
+
+/* ── Order section ── */
+body.light-mode .order-info {
+  background: rgba(255,255,255,.9);
+  border: 1px solid rgba(249,115,22,.14);
+  box-shadow: 0 4px 20px rgba(0,0,0,.05);
+}
+body.light-mode .order-title { color: #0f0f1a; }
+body.light-mode .order-sub { color: var(--muted); }
+body.light-mode .feat {
+  background: #f5f4fc;
+  border-color: rgba(249,115,22,.10);
+}
+body.light-mode .feat:hover { border-color: rgba(249,115,22,.25); }
+body.light-mode .feat-title { color: #0f0f1a; }
+body.light-mode .feat-desc { color: var(--muted); }
+body.light-mode .feat-ico {
+  background: rgba(249,115,22,.09);
+  border-color: rgba(249,115,22,.16);
+}
+body.light-mode .order-form-wrap {
+  background: #ffffff;
+  border: 1px solid rgba(249,115,22,.12);
+  box-shadow: 0 4px 24px rgba(0,0,0,.06);
+}
+body.light-mode .form-group label { color: rgba(15,15,26,.60); }
+body.light-mode .form-group input,
+body.light-mode .form-group select,
+body.light-mode .form-group textarea {
+  background: #f5f4fc;
+  border: 1px solid rgba(249,115,22,.18);
+  color: #0f0f1a;
+}
+body.light-mode .form-group input::placeholder,
+body.light-mode .form-group textarea::placeholder { color: rgba(15,15,26,.30); }
+body.light-mode .form-group input:focus,
+body.light-mode .form-group select:focus,
+body.light-mode .form-group textarea:focus {
+  border-color: rgba(249,115,22,.50);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.08);
+  background: #ffffff;
+}
+body.light-mode .form-note { color: var(--muted); }
+
+/* ── Testimonials ── */
+body.light-mode .testi-card {
+  background: #ffffff;
+  border: 1px solid rgba(249,115,22,.10);
+  box-shadow: 0 4px 20px rgba(0,0,0,.05);
+}
+body.light-mode .testi-card:hover {
+  border-color: rgba(249,115,22,.28);
+  box-shadow: 0 12px 40px rgba(249,115,22,.12);
+}
+body.light-mode .testi-quote { color: rgba(15,15,26,.68); }
+body.light-mode .testi-name { color: #0f0f1a; }
+body.light-mode .testi-role { color: var(--muted); }
+
+/* ── CTA band ── */
+body.light-mode #cta-band {
+  background: linear-gradient(135deg, rgba(249,115,22,.07), rgba(251,191,36,.04));
+  border-top: 1px solid rgba(249,115,22,.14);
+  border-bottom: 1px solid rgba(249,115,22,.14);
+}
+body.light-mode .cta-title { color: #0f0f1a; }
+body.light-mode .cta-sub { color: var(--muted); }
+
+/* ── Footer ── */
+body.light-mode footer {
+  background: #ffffff;
+  border-top: 1px solid rgba(249,115,22,.10);
+}
+body.light-mode .footer-bottom { border-top-color: rgba(15,15,26,.07); }
+body.light-mode .footer-desc { color: var(--muted); }
+body.light-mode .footer-heading { color: rgba(15,15,26,.38); }
+body.light-mode .footer-links a { color: var(--muted); }
+body.light-mode .footer-copy { color: rgba(60,60,90,.50); }
+body.light-mode .social-link {
+  border: 1px solid rgba(15,15,26,.12);
+  color: var(--muted);
+}
+body.light-mode .footer-logo-name { color: #0f0f1a; }
+
+/* ── Toast ── */
+body.light-mode #toast {
+  background: #ffffff;
+  border: 1px solid rgba(74,222,128,.30);
+  box-shadow: 0 8px 28px rgba(0,0,0,.10);
+}
+body.light-mode .toast-msg { color: #0f0f1a; }
+
+/* ── Transition list additions ── */
+body.light-mode .hero-bn1,
+body.light-mode .hero-bn2,
+body.light-mode .section-title,
+body.light-mode .proc-title,
+body.light-mode .srv-name,
+body.light-mode .testi-quote,
+body.light-mode .hld-by,
+body.light-mode .h-card,
+body.light-mode .float-badge,
+body.light-mode .btn-secondary { transition: background .4s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease; }
 
 /* ══ THEME TOGGLE BUTTON ══ */
 #theme-toggle {
@@ -742,7 +885,7 @@ body.cur-hover #c-ring { width: 56px; height: 56px; border-color: rgba(251,191,3
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(36px, 5vw, 62px);
   line-height: 1;
-  color: #fff;
+  color: var(--txt);
   margin-bottom: 16px;
   letter-spacing: .02em;
 }
@@ -1286,7 +1429,251 @@ footer {
   transition: background .4s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease;
 }
 
+/* ══════════════════════════════════════
+   AUTH MODAL
+══════════════════════════════════════ */
+#authModal {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,.78); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+#authModal.open { display: flex; }
+.auth-box {
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.15);
+  border-radius: 24px; padding: 40px 36px;
+  width: 100%; max-width: 420px; position: relative;
+  box-shadow: 0 40px 100px rgba(0,0,0,.7);
+  animation: fadeUp .4s cubic-bezier(.16,1,.3,1);
+}
+.auth-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  color: var(--txt); font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: none; transition: background .2s;
+}
+.auth-close:hover { background: rgba(239,68,68,.25); }
+.auth-logo {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: linear-gradient(145deg,#fbbf24,#f97316);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px; box-shadow: 0 0 28px rgba(249,115,22,.4);
+}
+.auth-logo svg { fill: #000; }
+.auth-title { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:.04em; text-align:center; margin-bottom:4px; }
+.auth-sub   { font-size:13px; color:var(--muted); text-align:center; margin-bottom:24px; }
+.auth-tabs  { display:flex; gap:0; margin-bottom:22px; background:var(--bg1); border-radius:12px; padding:4px; }
+.auth-tab   { flex:1; padding:9px; border-radius:9px; border:none; background:transparent; color:var(--muted); font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; cursor:none; transition:all .25s; }
+.auth-tab.active { background:rgba(249,115,22,.15); color:var(--orange); }
+.auth-social { display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+.auth-social-btn {
+  display:flex; align-items:center; gap:12px; padding:13px 18px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.08); background:var(--bg1);
+  color:var(--txt); font-family:'Outfit',sans-serif; font-size:14px; font-weight:500;
+  cursor:none; transition:all .25s; width:100%;
+}
+.auth-social-btn:hover { border-color:rgba(249,115,22,.35); background:rgba(249,115,22,.05); transform:translateY(-1px); }
+.auth-social-btn .sb-ic { width:22px; height:22px; flex-shrink:0; }
+.auth-divider { display:flex; align-items:center; gap:12px; font-size:11px; color:var(--muted); margin-bottom:14px; }
+.auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.07); }
+.auth-field { margin-bottom:13px; }
+.auth-field label { display:block; font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.14em; margin-bottom:7px; }
+.auth-field input {
+  width:100%; background:var(--bg1); border:1px solid rgba(255,255,255,.07);
+  border-radius:11px; padding:13px 15px; color:var(--txt);
+  font-family:'Outfit',sans-serif; font-size:14px; outline:none; transition:border-color .3s;
+}
+.auth-field input:focus { border-color:rgba(249,115,22,.45); box-shadow:0 0 0 3px rgba(249,115,22,.07); }
+.auth-field input::placeholder { color:rgba(112,112,160,.6); }
+.phone-row { display:flex; gap:8px; }
+.phone-code { width:72px; flex-shrink:0; background:var(--bg1); border:1px solid rgba(255,255,255,.07); border-radius:11px; padding:13px 8px; color:var(--txt); font-family:'Outfit',sans-serif; font-size:14px; outline:none; text-align:center; }
+.auth-submit {
+  width:100%; padding:14px; border-radius:12px;
+  background:linear-gradient(135deg,var(--orange),var(--amber));
+  color:#000; font-weight:800; font-size:14px; border:none; cursor:none;
+  font-family:'Outfit',sans-serif; transition:transform .2s,box-shadow .3s;
+}
+.auth-submit:hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(249,115,22,.4); }
+.auth-err  { font-size:12px; color:#f87171; margin-top:10px; text-align:center; min-height:18px; }
+.auth-switch { font-size:12px; color:var(--muted); text-align:center; margin-top:14px; }
+.auth-switch span { color:var(--orange); cursor:none; font-weight:600; }
+.auth-switch span:hover { text-decoration:underline; }
+.otp-row   { display:flex; gap:8px; justify-content:center; margin-bottom:16px; }
+.otp-digit {
+  width:48px; height:54px; text-align:center;
+  background:var(--bg1); border:1px solid rgba(255,255,255,.1);
+  border-radius:11px; color:var(--txt);
+  font-family:'Bebas Neue',sans-serif; font-size:26px; outline:none;
+  transition:border-color .3s;
+}
+.otp-digit:focus { border-color:rgba(249,115,22,.5); }
 
+/* Navbar user */
+.nav-user { display:flex; align-items:center; gap:10px; cursor:none; position:relative; }
+.nav-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(135deg,var(--orange),var(--amber));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:16px; color:#000;
+  border:2px solid rgba(249,115,22,.4); overflow:hidden; flex-shrink:0;
+  transition:box-shadow .3s;
+}
+.nav-avatar:hover { box-shadow:0 0 18px rgba(249,115,22,.5); }
+.nav-avatar img { width:100%; height:100%; object-fit:cover; }
+.nav-user-name { font-size:13px; font-weight:600; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.user-dropdown {
+  position:absolute; top:calc(100% + 12px); right:0;
+  background:var(--bg2); border:1px solid rgba(249,115,22,.15);
+  border-radius:14px; padding:8px; min-width:180px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  opacity:0; pointer-events:none; transform:translateY(-8px);
+  transition:all .25s cubic-bezier(.16,1,.3,1); z-index:200;
+}
+.nav-user:hover .user-dropdown { opacity:1; pointer-events:auto; transform:translateY(0); }
+.ud-head  { padding:10px 12px 8px; border-bottom:1px solid rgba(249,115,22,.08); margin-bottom:4px; }
+.ud-name  { font-size:13px; font-weight:700; }
+.ud-email { font-size:11px; color:var(--muted); margin-top:2px; word-break:break-all; }
+.ud-item  { display:flex; align-items:center; gap:9px; padding:9px 12px; border-radius:9px; font-size:13px; color:var(--muted); cursor:none; transition:all .2s; }
+.ud-item:hover { background:rgba(249,115,22,.07); color:var(--txt); }
+.ud-item.danger:hover { background:rgba(239,68,68,.1); color:#f87171; }
+.nav-signin {
+  padding:9px 20px; border-radius:100px;
+  background:rgba(249,115,22,.1); border:1px solid rgba(249,115,22,.25);
+  color:var(--orange); font-size:13px; font-weight:600;
+  cursor:none; transition:all .25s; white-space:nowrap;
+}
+.nav-signin:hover { background:rgba(249,115,22,.2); transform:translateY(-1px); }
+
+/* Provider grid */
+.auth-provider-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.apb {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 14px 8px; border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: var(--bg1);
+  color: var(--txt); font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 600;
+  cursor: none; transition: all .25s;
+}
+.apb:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+.apb-google:hover    { border-color: #4285F4; background: rgba(66,133,244,.08); }
+.apb-facebook:hover  { border-color: #1877F2; background: rgba(24,119,242,.08); }
+.apb-apple:hover     { border-color: #fff; background: rgba(255,255,255,.06); }
+.apb-microsoft:hover { border-color: #7FBA00; background: rgba(127,186,0,.08); }
+.apb-phone:hover     { border-color: var(--orange); background: rgba(249,115,22,.09); color: var(--orange); }
+.apb-email:hover     { border-color: var(--amber); background: rgba(251,191,36,.08); color: var(--amber); }
+.apb svg { flex-shrink: 0; }
+
+/* Form back link */
+.auth-form-back {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  cursor: none; margin-bottom: 16px;
+  transition: color .2s;
+}
+.auth-form-back:hover { color: var(--orange); }
+
+/* light mode provider grid */
+body.light-mode .apb { background: #f5f4fc; border-color: rgba(249,115,22,.15); color: #0f0f1a; }
+
+/* ══════════════════════════════════════
+   MY ORDERS SECTION
+══════════════════════════════════════ */
+#myOrders {
+  display: none;
+  position: relative; z-index: 2;
+  padding: 80px 60px;
+  background: var(--bg1);
+  border-top: 1px solid rgba(249,115,22,.08);
+}
+#myOrders.visible { display: block; }
+
+.mo-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 36px;
+}
+.mo-welcome {
+  display: flex; align-items: center; gap: 16px;
+}
+.mo-avatar-lg {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--orange), var(--amber));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #000;
+  border: 3px solid rgba(249,115,22,.3); overflow: hidden; flex-shrink: 0;
+}
+.mo-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+.mo-greet  { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+.mo-uname  { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .04em; }
+
+.mo-stats  { display: flex; gap: 20px; flex-wrap: wrap; }
+.mo-stat   {
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.08);
+  border-radius: 14px; padding: 14px 20px; text-align: center; min-width: 90px;
+}
+.mo-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1; }
+.mo-stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-top: 3px; }
+.mo-stat-val.c-or { color: var(--orange); }
+.mo-stat-val.c-gn { color: #4ade80; }
+.mo-stat-val.c-yw { color: #fbbf24; }
+
+/* Order cards */
+.mo-list   { display: flex; flex-direction: column; gap: 14px; }
+.mo-card   {
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.08);
+  border-radius: 18px; padding: 22px 24px;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 16px; align-items: center;
+  transition: border-color .3s, transform .3s;
+}
+.mo-card:hover { border-color: rgba(249,115,22,.22); transform: translateX(4px); }
+.mo-card-icon  {
+  width: 48px; height: 48px; border-radius: 13px;
+  background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.15);
+  display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+}
+.mo-card-info  { min-width: 0; }
+.mo-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.mo-card-meta  { font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+.mo-card-date  { font-size: 11px; color: var(--muted); }
+.mo-badge      {
+  padding: 5px 13px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.mo-b-new       { background: rgba(59,130,246,.14); color: #60a5fa; border: 1px solid rgba(59,130,246,.22); }
+.mo-b-progress  { background: rgba(234,179,8,.14);  color: #fbbf24; border: 1px solid rgba(234,179,8,.22); }
+.mo-b-done      { background: rgba(34,197,94,.14);  color: #4ade80; border: 1px solid rgba(34,197,94,.22); }
+.mo-b-cancelled { background: rgba(239,68,68,.14);  color: #f87171; border: 1px solid rgba(239,68,68,.22); }
+
+.mo-empty   { text-align: center; padding: 40px; color: var(--muted); }
+.mo-empty-ic{ font-size: 40px; margin-bottom: 12px; opacity: .4; }
+.mo-signin-prompt {
+  text-align: center; padding: 50px 20px;
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.1);
+  border-radius: 20px;
+}
+.mo-signin-prompt h3 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; margin-bottom: 8px; }
+.mo-signin-prompt p  { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+
+/* light mode my orders */
+body.light-mode #myOrders          { background: #fff; }
+body.light-mode .mo-stat,
+body.light-mode .mo-card           { background: #f5f4fc; }
+body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
+
+@media (max-width: 768px) {
+  #myOrders { padding: 60px 20px; }
+  .mo-card  { grid-template-columns: auto 1fr; }
+  .mo-card-date { grid-column: 1/-1; }
+  .auth-provider-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── existing media query continues ── */
 @media (max-width: 1100px) {
   .hero-card-wrap { display: none; }
   .services-grid { grid-template-columns: 1fr 1fr; }
@@ -1377,19 +1764,131 @@ footer {
     <li><a href="#testimonials">Reviews</a></li>
   </ul>
 
-  <!-- RIGHT SIDE: Toggle + CTA -->
-  <div style="display:flex;align-items:center;gap:16px;">
-    <!-- THEME TOGGLE -->
+  <!-- RIGHT SIDE: Toggle + Auth -->
+  <div style="display:flex;align-items:center;gap:14px;">
     <button id="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
       <span class="toggle-icon">
         <span class="t-moon">🌙</span>
         <span class="t-sun">☀️</span>
       </span>
     </button>
-    <!-- CTA -->
-    <a href="#order" class="nav-cta">Get Started →</a>
+
+    <!-- LOGGED OUT: show sign-in -->
+    <button class="nav-signin" id="navSigninBtn" onclick="openAuth()">Sign In →</button>
+
+    <!-- LOGGED IN: show avatar + dropdown (hidden by default) -->
+    <div class="nav-user" id="navUser" style="display:none;">
+      <div class="nav-avatar" id="navAvatar">U</div>
+      <span class="nav-user-name" id="navUserName">User</span>
+      <div class="user-dropdown">
+        <div class="ud-head">
+          <div class="ud-name"  id="udName">—</div>
+          <div class="ud-email" id="udEmail">—</div>
+        </div>
+        <div class="ud-item" onclick="document.getElementById('myOrders').scrollIntoView({behavior:'smooth'})">📋 My Orders</div>
+        <div class="ud-item danger" onclick="signOutUser()">🚪 Sign Out</div>
+      </div>
+    </div>
   </div>
 </nav>
+
+<!-- ══════════════════════════════════════
+     AUTH MODAL
+══════════════════════════════════════ -->
+<div id="authModal">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <div class="auth-logo">
+      <svg viewBox="0 0 12 14" width="20" height="23"><polygon points="0,0 12,7 0,14"/></svg>
+    </div>
+    <div class="auth-title">Welcome to EditKori</div>
+    <div class="auth-sub">Sign in to track your orders</div>
+
+    <!-- Tab: Login / Register -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login',this)">Sign In</button>
+      <button class="auth-tab"        onclick="switchTab('register',this)">Register</button>
+    </div>
+
+    <!-- 6 Provider Grid -->
+    <div class="auth-provider-grid">
+      <button class="apb apb-google"    onclick="authGoogle()">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span>Google</span>
+      </button>
+      <button class="apb apb-facebook"  onclick="authFacebook()">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#1877F2" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+        <span>Facebook</span>
+      </button>
+      <button class="apb apb-apple"     onclick="authApple()">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <span>Apple</span>
+      </button>
+      <button class="apb apb-microsoft" onclick="authMicrosoft()">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#F25022" d="M1 1h10v10H1z"/><path fill="#7FBA00" d="M13 1h10v10H13z"/><path fill="#00A4EF" d="M1 13h10v10H1z"/><path fill="#FFB900" d="M13 13h10v10H13z"/></svg>
+        <span>Microsoft</span>
+      </button>
+      <button class="apb apb-phone"     onclick="showPhoneForm()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/></svg>
+        <span>Phone</span>
+      </button>
+      <button class="apb apb-email"     onclick="showEmailForm()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+        <span>Email</span>
+      </button>
+    </div>
+
+    <!-- EMAIL FORM (hidden by default) -->
+    <div id="emailForm" style="display:none;">
+      <div class="auth-form-back" onclick="hideAllForms()">← Back</div>
+      <div id="registerNameField" class="auth-field" style="display:none;">
+        <label>Full Name</label>
+        <input type="text" id="authName" placeholder="Abdul Karim"/>
+      </div>
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="authEmail" placeholder="you@example.com"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="authPass" placeholder="Min 6 characters"/>
+      </div>
+      <button class="auth-submit" id="emailSubmitBtn" onclick="authEmail()">Sign In with Email →</button>
+    </div>
+
+    <!-- PHONE FORM (hidden by default) -->
+    <div id="phoneForm" style="display:none;">
+      <div class="auth-form-back" onclick="hideAllForms()">← Back</div>
+      <div id="phoneStep1">
+        <div class="auth-field">
+          <label>📱 Phone Number</label>
+          <div class="phone-row">
+            <input class="phone-code" type="text" id="phoneCode" value="+880"/>
+            <input type="tel" id="phoneNum" placeholder="01XXXXXXXXX"
+              style="flex:1;background:var(--bg1);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:13px 15px;color:var(--txt);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .3s;"
+              onfocus="this.style.borderColor='rgba(249,115,22,.45)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'"/>
+          </div>
+        </div>
+        <div id="recaptcha-container"></div>
+        <button class="auth-submit" onclick="sendOTP()">Send OTP →</button>
+      </div>
+      <div id="phoneStep2" style="display:none;">
+        <div class="auth-field" style="text-align:center;">
+          <label>Enter the 6-digit OTP</label>
+          <div class="otp-row" id="otpRow"></div>
+        </div>
+        <button class="auth-submit" onclick="verifyOTP()">Verify & Sign In →</button>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:10px;cursor:pointer;"
+          onclick="document.getElementById('phoneStep1').style.display='';document.getElementById('phoneStep2').style.display='none';">← Change number</p>
+      </div>
+    </div>
+
+    <div class="auth-err" id="authErr"></div>
+    <div class="auth-switch" id="authSwitch">
+      Don't have an account? <span onclick="switchTab('register',null)">Register free</span>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════
      HERO
@@ -1755,6 +2254,46 @@ footer {
 </div>
 
 <!-- ══════════════════════════════════════
+     MY ORDERS SECTION (visible after login)
+══════════════════════════════════════ -->
+<section id="myOrders">
+  <div class="section-chip" style="margin-bottom:12px;">My Account</div>
+
+  <!-- Logged OUT state -->
+  <div id="moLoggedOut" class="mo-signin-prompt">
+    <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+    <h3>Sign In to View Your Orders</h3>
+    <p>Track your projects, check delivery status and get updates in real-time.</p>
+    <button class="btn-primary" onclick="openAuth()" style="margin:0 auto;">Sign In / Register →</button>
+  </div>
+
+  <!-- Logged IN state -->
+  <div id="moLoggedIn" style="display:none;">
+    <div class="mo-header">
+      <div class="mo-welcome">
+        <div class="mo-avatar-lg" id="moAvatarLg">U</div>
+        <div>
+          <div class="mo-greet">Welcome back 👋</div>
+          <div class="mo-uname" id="moUname">User</div>
+        </div>
+      </div>
+      <div class="mo-stats">
+        <div class="mo-stat"><div class="mo-stat-val c-or" id="moTotal">0</div><div class="mo-stat-lbl">Total</div></div>
+        <div class="mo-stat"><div class="mo-stat-val c-yw" id="moActive">0</div><div class="mo-stat-lbl">Active</div></div>
+        <div class="mo-stat"><div class="mo-stat-val c-gn" id="moDone">0</div><div class="mo-stat-lbl">Done</div></div>
+      </div>
+    </div>
+
+    <div class="mo-list" id="moList">
+      <div style="text-align:center;padding:30px;color:var(--muted);">
+        <div style="font-size:32px;margin-bottom:8px;opacity:.4;">⏳</div>
+        Loading your orders…
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
      FOOTER
 ══════════════════════════════════════ -->
 <footer>
@@ -1768,7 +2307,7 @@ footer {
           </div>
         </div>
         <div style="line-height:1.15;">
-          <div style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:#eeeef8;letter-spacing:-.3px;">editk<span style="color:#f97316;">o</span>ri.com</div>
+          <div class="footer-logo-name" style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;">editk<span style="color:#f97316;">o</span>ri.com</div>
           <div style="font-size:8px;font-weight:700;color:#404060;letter-spacing:.2em;text-transform:uppercase;margin-top:3px;">Product by: Abdul Mukit</div>
         </div>
       </div>
@@ -1818,7 +2357,6 @@ footer {
 <!-- ══════════════════════════════════════
      JAVASCRIPT
 ══════════════════════════════════════ -->
-<!-- ══ FULLSCREEN VIDEO OVERLAY ══ -->
 <!-- inline card video player — no overlay needed -->
 
 <script>
@@ -2237,36 +2775,411 @@ function doFilter(btn, cat) {
   });
 })();
 
-function submitOrder(e) {
+/* ══════════════════════════════════════
+   12. ORDER SUBMIT — Formspree (Simple!)
+   ══════════════════════════════════════
+   📧 Setup (2 minutes):
+   1. Go to https://formspree.io → Sign up free
+   2. "New Form" → give it a name → Copy your form ID
+   3. Replace YOUR_FORM_ID below with your actual ID
+   ══════════════════════════════════════ */
+async function submitOrder(e) {
   e.preventDefault();
   var btn = document.getElementById('submitBtn');
-  btn.textContent = 'Sending...';
+  btn.textContent = '⏳ Sending...';
+  btn.disabled = true;
   btn.style.opacity = '.7';
 
-  // Real API call to Node.js backend
   var formData = {};
   new FormData(e.target).forEach(function(v, k) { formData[k] = v; });
-  fetch('/api/orders', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
-  }).catch(function() {});
 
-  setTimeout(function() {
-    btn.textContent = '✅ Order Submitted Successfully!';
-    btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
-    btn.style.opacity = '1';
-    var toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show'); }, 5000);
-    setTimeout(function() {
-      btn.textContent = 'Submit Order & Get Your Quote →';
-      btn.style.background = '';
-      e.target.reset();
-    }, 4000);
-  }, 1600);
+  // attach user if logged in
+  if (window._fbCurrentUser) {
+    formData.userId    = window._fbCurrentUser.uid;
+    formData.userEmail = window._fbCurrentUser.email || '';
+    formData.userName  = window._fbCurrentUser.displayName || '';
+  }
+
+  try {
+    var res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    if (res.ok) {
+      btn.textContent = '✅ Order Submitted!';
+      btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+      btn.style.opacity = '1';
+      btn.disabled = false;
+      var toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 5000);
+      setTimeout(function() {
+        btn.textContent = 'Submit Order & Get Your Quote →';
+        btn.style.background = '';
+        e.target.reset();
+      }, 4000);
+    } else { throw new Error(); }
+  } catch {
+    btn.textContent = '❌ Failed — Try Again';
+    btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+    btn.style.opacity = '1'; btn.disabled = false;
+    setTimeout(function() { btn.textContent = 'Submit Order & Get Your Quote →'; btn.style.background = ''; }, 3500);
+  }
 }
 </script>
+
+<!-- ══════════════════════════════════════
+     FIREBASE AUTH
+══════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }                             from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAnalytics }                              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+import {
+  getAuth, onAuthStateChanged, signOut,
+  signInWithPopup, OAuthProvider,
+  GoogleAuthProvider, FacebookAuthProvider,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  updateProfile,
+  RecaptchaVerifier, signInWithPhoneNumber
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import {
+  getFirestore, doc, setDoc, getDoc,
+  collection, query, where, orderBy, getDocs,
+  serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+/* ── Config ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyA_fv9NrThoWjKLCE780Ua7FWFIgdZ5IkM",
+  authDomain:        "editkori-21830.firebaseapp.com",
+  databaseURL:       "https://editkori-21830-default-rtdb.firebaseio.com",
+  projectId:         "editkori-21830",
+  storageBucket:     "editkori-21830.firebasestorage.app",
+  messagingSenderId: "856421720283",
+  appId:             "1:856421720283:web:88dd5643c9d6c694426cfe",
+  measurementId:     "G-4V5VT0298P"
+};
+
+const app      = initializeApp(firebaseConfig);
+const analytics= getAnalytics(app);
+const auth     = getAuth(app);
+const db       = getFirestore(app);
+
+/* ── Providers ── */
+const googleProv    = new GoogleAuthProvider();
+const facebookProv  = new FacebookAuthProvider();
+const appleProv     = new OAuthProvider('apple.com');
+const microsoftProv = new OAuthProvider('microsoft.com');
+appleProv.addScope('email'); appleProv.addScope('name');
+
+let confirmResult = null;
+
+/* ══════════════════════════════════════
+   SAVE USER TO FIRESTORE
+══════════════════════════════════════ */
+async function saveUserData(user) {
+  if (!user) return;
+  const ref  = doc(db, 'users', user.uid);
+  const snap = await getDoc(ref);
+  const data = {
+    uid:         user.uid,
+    displayName: user.displayName || '',
+    email:       user.email || '',
+    phone:       user.phoneNumber || '',
+    photoURL:    user.photoURL || '',
+    lastLogin:   serverTimestamp(),
+  };
+  if (!snap.exists()) data.createdAt = serverTimestamp();
+  await setDoc(ref, data, { merge: true });
+}
+
+/* ══════════════════════════════════════
+   LOAD USER ORDERS (from server API)
+══════════════════════════════════════ */
+async function loadMyOrders(user) {
+  const list = document.getElementById('moList');
+  const catIcons = {
+    'YouTube Video':'📺','Reels / Shorts':'🎭','Wedding Film':'💍',
+    'Commercial Ad':'📢','Music Video':'🎵','Motion Graphics':'✨','Other':'🎬'
+  };
+  const statusClass = {
+    new:'mo-b-new','in-progress':'mo-b-progress',done:'mo-b-done',cancelled:'mo-b-cancelled'
+  };
+  const statusLabel = {
+    new:'🆕 New','in-progress':'⚙️ In Progress',done:'✅ Done',cancelled:'❌ Cancelled'
+  };
+
+  try {
+    // fetch from server.js API — filter by userEmail
+    const res = await fetch('/api/orders?secret=editkori2025');
+    if (!res.ok) throw new Error();
+    const all = await res.json();
+
+    // filter orders belonging to this user
+    const myOrds = all.filter(o =>
+      o.userId === user.uid ||
+      (o.userEmail && o.userEmail === user.email) ||
+      (o.email && o.email === user.email)
+    );
+
+    // update mini stats
+    document.getElementById('moTotal').textContent  = myOrds.length;
+    document.getElementById('moActive').textContent = myOrds.filter(o => o.status === 'in-progress').length;
+    document.getElementById('moDone').textContent   = myOrds.filter(o => o.status === 'done').length;
+
+    if (!myOrds.length) {
+      list.innerHTML = `<div class="mo-empty">
+        <div class="mo-empty-ic">📭</div>
+        <div>You haven't placed any orders yet.</div>
+        <a href="#order" class="btn-primary" style="display:inline-flex;margin-top:18px;font-size:14px;">Place Your First Order →</a>
+      </div>`;
+      return;
+    }
+
+    list.innerHTML = myOrds.map(o => {
+      const icon  = catIcons[o.category] || '🎬';
+      const sc    = statusClass[o.status] || 'mo-b-new';
+      const sl    = statusLabel[o.status] || '🆕 New';
+      const dt    = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+      return `<div class="mo-card">
+        <div class="mo-card-icon">${icon}</div>
+        <div class="mo-card-info">
+          <div class="mo-card-title">${o.category || 'Video Project'}</div>
+          <div class="mo-card-meta">
+            <span>⚡ ${o.speed || 'Standard'}</span>
+            <span>🎬 ${o.length || '—'}</span>
+            ${o.driveLink ? `<a href="${o.driveLink}" target="_blank" style="color:#60a5fa;">🔗 Drive</a>` : ''}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <span class="mo-badge ${sc}">${sl}</span>
+          <span class="mo-card-date">${dt}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+  } catch {
+    list.innerHTML = `<div class="mo-empty"><div class="mo-empty-ic">⚠️</div><div>Could not load orders. Make sure the server is running.</div></div>`;
+  }
+}
+
+/* ══════════════════════════════════════
+   AUTH STATE LISTENER
+══════════════════════════════════════ */
+onAuthStateChanged(auth, async (user) => {
+  window._fbCurrentUser = user;
+  const signinBtn  = document.getElementById('navSigninBtn');
+  const userEl     = document.getElementById('navUser');
+  const avatarEl   = document.getElementById('navAvatar');
+  const nameEl     = document.getElementById('navUserName');
+  const udName     = document.getElementById('udName');
+  const udEmail    = document.getElementById('udEmail');
+  const moSection  = document.getElementById('myOrders');
+  const moOut      = document.getElementById('moLoggedOut');
+  const moIn       = document.getElementById('moLoggedIn');
+  const moAvatarLg = document.getElementById('moAvatarLg');
+  const moUname    = document.getElementById('moUname');
+
+  if (user) {
+    /* ── Navbar ── */
+    signinBtn.style.display = 'none';
+    userEl.style.display    = 'flex';
+    const name  = user.displayName || user.email?.split('@')[0] || 'User';
+    const email = user.email || user.phoneNumber || '';
+    nameEl.textContent  = name.split(' ')[0];
+    udName.textContent  = name;
+    udEmail.textContent = email;
+    if (user.photoURL) {
+      avatarEl.innerHTML   = `<img src="${user.photoURL}" alt="${name}"/>`;
+      moAvatarLg.innerHTML = `<img src="${user.photoURL}" alt="${name}"/>`;
+    } else {
+      const ini = name.charAt(0).toUpperCase();
+      avatarEl.textContent   = ini;
+      moAvatarLg.textContent = ini;
+    }
+    moUname.textContent = name;
+
+    /* ── My Orders section ── */
+    moSection.classList.add('visible');
+    moOut.style.display = 'none';
+    moIn.style.display  = '';
+
+    /* ── Also add My Orders nav link if not exists ── */
+    const navLinks = document.querySelector('.nav-links');
+    if (navLinks && !document.getElementById('navMyOrders')) {
+      const li = document.createElement('li');
+      li.id = 'navMyOrders';
+      li.innerHTML = `<a href="#myOrders">My Orders</a>`;
+      navLinks.appendChild(li);
+    }
+
+    await saveUserData(user);
+    await loadMyOrders(user);
+    closeAuth();
+  } else {
+    /* ── Logged out ── */
+    signinBtn.style.display = '';
+    userEl.style.display    = 'none';
+    window._fbCurrentUser   = null;
+    moSection.classList.add('visible');
+    moOut.style.display = '';
+    moIn.style.display  = 'none';
+    const moNavLi = document.getElementById('navMyOrders');
+    if (moNavLi) moNavLi.remove();
+  }
+});
+
+/* ══════════════════════════════════════
+   MODAL HELPERS
+══════════════════════════════════════ */
+window.openAuth  = () => { document.getElementById('authModal').classList.add('open'); clearErr(); hideAllForms(); };
+window.closeAuth = () => { document.getElementById('authModal').classList.remove('open'); };
+document.getElementById('authModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('authModal')) closeAuth();
+});
+function setErr(msg) { document.getElementById('authErr').textContent = msg; }
+function clearErr()  { document.getElementById('authErr').textContent = ''; }
+
+/* ══════════════════════════════════════
+   FORM SHOW/HIDE
+══════════════════════════════════════ */
+window.hideAllForms = () => {
+  document.getElementById('emailForm').style.display = 'none';
+  document.getElementById('phoneForm').style.display = 'none';
+  document.getElementById('authSwitch').style.display = '';
+  clearErr();
+};
+window.showEmailForm = () => {
+  document.getElementById('emailForm').style.display = '';
+  document.getElementById('phoneForm').style.display = 'none';
+  clearErr();
+};
+window.showPhoneForm = () => {
+  document.getElementById('phoneForm').style.display = '';
+  document.getElementById('emailForm').style.display = 'none';
+  document.getElementById('authSwitch').style.display = 'none';
+  clearErr();
+};
+
+/* ══════════════════════════════════════
+   TAB SWITCH
+══════════════════════════════════════ */
+window.switchTab = (tab, el) => {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelectorAll('.auth-tab')[tab==='login'?0:1].classList.add('active');
+  const nameF = document.getElementById('registerNameField');
+  const btnEl = document.getElementById('emailSubmitBtn');
+  const sw    = document.getElementById('authSwitch');
+  if (tab === 'register') {
+    nameF.style.display = '';
+    btnEl.textContent   = 'Create Account →';
+    sw.innerHTML = `Already have an account? <span onclick="switchTab('login',null)">Sign in</span>`;
+  } else {
+    nameF.style.display = 'none';
+    btnEl.textContent   = 'Sign In with Email →';
+    sw.innerHTML = `Don't have an account? <span onclick="switchTab('register',null)">Register free</span>`;
+  }
+  clearErr();
+};
+
+/* ══════════════════════════════════════
+   PROVIDERS
+══════════════════════════════════════ */
+window.authGoogle    = async () => { clearErr(); try { await signInWithPopup(auth, googleProv);    } catch(e) { setErr(fe(e.code)); } };
+window.authFacebook  = async () => { clearErr(); try { await signInWithPopup(auth, facebookProv);  } catch(e) { setErr(fe(e.code)); } };
+window.authApple     = async () => { clearErr(); try { await signInWithPopup(auth, appleProv);     } catch(e) { setErr(fe(e.code)); } };
+window.authMicrosoft = async () => { clearErr(); try { await signInWithPopup(auth, microsoftProv); } catch(e) { setErr(fe(e.code)); } };
+
+/* ══════════════════════════════════════
+   EMAIL
+══════════════════════════════════════ */
+window.authEmail = async () => {
+  clearErr();
+  const email = document.getElementById('authEmail').value.trim();
+  const pass  = document.getElementById('authPass').value;
+  const name  = document.getElementById('authName').value.trim();
+  const isReg = document.getElementById('registerNameField').style.display !== 'none';
+  if (!email || !pass) { setErr('Email ও Password দিন।'); return; }
+  const btn = document.getElementById('emailSubmitBtn');
+  btn.textContent = '⏳ Please wait...'; btn.disabled = true;
+  try {
+    if (isReg) {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      if (name) await updateProfile(cred.user, { displayName: name });
+    } else {
+      await signInWithEmailAndPassword(auth, email, pass);
+    }
+  } catch(e) { setErr(fe(e.code)); }
+  finally { btn.textContent = isReg ? 'Create Account →' : 'Sign In with Email →'; btn.disabled = false; }
+};
+
+/* ══════════════════════════════════════
+   PHONE OTP
+══════════════════════════════════════ */
+window.sendOTP = async () => {
+  clearErr();
+  const code = document.getElementById('phoneCode').value.trim();
+  const num  = document.getElementById('phoneNum').value.trim();
+  if (!num) { setErr('Phone number দিন।'); return; }
+  const full = code + num.replace(/^0/, '');
+  try {
+    if (!window._recaptcha) {
+      window._recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+    }
+    confirmResult = await signInWithPhoneNumber(auth, full, window._recaptcha);
+    document.getElementById('phoneStep1').style.display = 'none';
+    document.getElementById('phoneStep2').style.display = '';
+    const row = document.getElementById('otpRow');
+    row.innerHTML = '';
+    for (let i = 0; i < 6; i++) {
+      const inp = document.createElement('input');
+      inp.type = 'text'; inp.maxLength = 1; inp.className = 'otp-digit'; inp.inputMode = 'numeric';
+      inp.addEventListener('input', () => { if (inp.value && inp.nextElementSibling) inp.nextElementSibling.focus(); });
+      inp.addEventListener('keydown', e => { if (e.key==='Backspace' && !inp.value && inp.previousElementSibling) inp.previousElementSibling.focus(); });
+      row.appendChild(inp);
+    }
+    row.children[0].focus();
+  } catch(e) {
+    setErr(fe(e.code));
+    if (window._recaptcha) { window._recaptcha.clear(); window._recaptcha = null; }
+  }
+};
+window.verifyOTP = async () => {
+  clearErr();
+  const digits = [...document.querySelectorAll('.otp-digit')].map(i => i.value).join('');
+  if (digits.length < 6) { setErr('৬ সংখ্যার OTP দিন।'); return; }
+  try { await confirmResult.confirm(digits); }
+  catch { setErr('OTP ভুল বা মেয়াদ শেষ।'); }
+};
+
+/* ══════════════════════════════════════
+   SIGN OUT
+══════════════════════════════════════ */
+window.signOutUser = async () => { await signOut(auth); };
+
+/* ══════════════════════════════════════
+   FRIENDLY ERRORS
+══════════════════════════════════════ */
+function fe(code) {
+  const m = {
+    'auth/invalid-email':'ইমেইল ঠিকানা সঠিক নয়।',
+    'auth/user-not-found':'এই ইমেইলে কোনো account নেই।',
+    'auth/wrong-password':'পাসওয়ার্ড ভুল।',
+    'auth/email-already-in-use':'এই ইমেইল ইতিমধ্যে ব্যবহার হচ্ছে।',
+    'auth/weak-password':'পাসওয়ার্ড কমপক্ষে ৬ অক্ষর হতে হবে।',
+    'auth/popup-closed-by-user':'Login বাতিল করা হয়েছে।',
+    'auth/account-exists-with-different-credential':'এই account অন্য পদ্ধতিতে registered।',
+    'auth/too-many-requests':'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।',
+    'auth/network-request-failed':'Internet connection সমস্যা।',
+    'auth/invalid-phone-number':'Phone number সঠিক নয়।',
+    'auth/invalid-verification-code':'OTP সঠিক নয়।',
+  };
+  return m[code] || 'কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।';
+}
+</script>
+
 
 
 </body>
