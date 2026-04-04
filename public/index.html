@@ -2801,11 +2801,10 @@ async function submitOrder(e) {
   }
 
   try {
-    var res = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
+    // ✅ Module script থেকে expose করা function call করো
+    if (!window._addOrder) throw new Error('Firebase এখনো load হয়নি। একটু পরে আবার চেষ্টা করুন।');
+    await window._addOrder(formData);
+    var res = { ok: true };
     if (res.ok) {
       btn.textContent = '✅ Order Submitted!';
       btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
@@ -2846,18 +2845,32 @@ import {
 import {
   getFirestore, doc, setDoc, getDoc,
   collection, query, where, orderBy, getDocs,
-  serverTimestamp
+  addDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 /* ── Config ── */
-// ✅ SECURE: Server থেকে config আনো
-const _cfgRes        = await fetch('/api/config');
-const firebaseConfig = await _cfgRes.json();
+const firebaseConfig = {
+  apiKey:            "AIzaSyA_fv9NrThoWjKLCE780Ua7FWFIgdZ5IkM",
+  authDomain:        "editkori-21830.firebaseapp.com",
+  databaseURL:       "https://editkori-21830-default-rtdb.firebaseio.com",
+  projectId:         "editkori-21830",
+  storageBucket:     "editkori-21830.firebasestorage.app",
+  messagingSenderId: "856421720283",
+  appId:             "1:856421720283:web:88dd5643c9d6c694426cfe",
+  measurementId:     "G-4V5VT0298P"
+};
 
 const app      = initializeApp(firebaseConfig);
 const analytics= getAnalytics(app);
 const auth     = getAuth(app);
 const db       = getFirestore(app);
+
+/* ✅ Regular script থেকে call করার জন্য expose করো */
+window._addOrder = async function(formData) {
+  formData.status    = 'new';
+  formData.createdAt = new Date().toISOString();
+  await addDoc(collection(db, 'orders'), formData);
+};
 
 /* ── Providers ── */
 const googleProv    = new GoogleAuthProvider();
@@ -2904,11 +2917,15 @@ async function loadMyOrders(user) {
   };
 
   try {
-    // ✅ SECURE: নিজের orders, admin secret লাগে না
-    const _em = encodeURIComponent(user.email || '');
-    const res = await fetch(`/api/myorders?email=${_em}`);
-    if (!res.ok) throw new Error();
-    const myOrds = await res.json();
+    // ✅ Firestore থেকে user-এর orders পড়ো
+    const userEmail = user.email || '';
+    const q = query(
+      collection(db, 'orders'),
+      where('email', '==', userEmail),
+      orderBy('createdAt', 'desc')
+    );
+    const snap   = await getDocs(q);
+    const myOrds = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     // update mini stats
     document.getElementById('moTotal').textContent  = myOrds.length;

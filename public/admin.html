@@ -285,11 +285,31 @@ select.fsel option{background:var(--bg2);}
 <!-- TOAST -->
 <div id="tk"><span id="tkIc">✅</span><span id="tkMsg">সম্পন্ন!</span></div>
 
-<script>
-// ✅ SECURE: Hardcoded password নেই
-const SECRET = prompt('🔐 Admin Password:') || '';
-if (!SECRET) { document.body.innerHTML='<h2 style="color:red;font-family:sans-serif;text-align:center;padding:3rem">⛔ Access Denied</h2>'; throw new Error('No password'); }
-const API    = '/api/orders';
+<script type="module">
+/* ══════════════════════════════════════════════════════════
+   EditKori Admin Panel — Firebase Firestore version
+   সব কিছু একটি module script-এ — scope problem নেই
+══════════════════════════════════════════════════════════ */
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import {
+  getFirestore, collection, query, orderBy,
+  getDocs, doc, updateDoc, deleteDoc
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyA_fv9NrThoWjKLCE780Ua7FWFIgdZ5IkM",
+  authDomain:        "editkori-21830.firebaseapp.com",
+  projectId:         "editkori-21830",
+  storageBucket:     "editkori-21830.firebasestorage.app",
+  messagingSenderId: "856421720283",
+  appId:             "1:856421720283:web:88dd5643c9d6c694426cfe"
+};
+
+const fbApp = initializeApp(firebaseConfig, 'admin');
+const db    = getFirestore(fbApp);
+
+/* ── Admin password — এটা change করো ────────────────────── */
+const SECRET = 'EditKori_Admin_2025!';
 
 let orders    = [];
 let curFilter = 'all';
@@ -316,20 +336,22 @@ function logout() {
   document.getElementById('lpass').value = '';
 }
 document.getElementById('lpass').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+window.login  = login;
+window.logout = logout;
 
-/* ── LOAD ── */
+/* ── LOAD — Firestore থেকে সব orders ── */
 async function loadOrders() {
   document.getElementById('tblWrap').innerHTML = '<div class="spin"></div>';
   try {
-    const res = await fetch(API + '?secret=' + SECRET);
-    if (!res.ok) throw new Error();
-    orders = await res.json();
+    const snap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')));
+    orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderAll();
-  } catch {
+  } catch(err) {
     document.getElementById('tblWrap').innerHTML =
-      '<div class="empty"><div class="empty-ic">⚠️</div><div>Server connect করতে পারছি না।<br><small>server.js চালু আছে কি?</small></div></div>';
+      `<div class="empty"><div class="empty-ic">⚠️</div><div>Firestore connect হচ্ছে না।<br><small>${err.message}</small><br><br>Firebase Console → Firestore → Rules দেখো।</div></div>`;
   }
 }
+window.loadOrders = loadOrders;
 
 function renderAll() {
   const n = v => orders.filter(o => o.status === v).length;
@@ -364,7 +386,6 @@ function renderTable() {
   }
 
   const sc = {new:'sp-new','in-progress':'sp-progress',done:'sp-done',cancelled:'sp-cancelled'};
-
   let h = `<table class="tbl"><thead><tr>
     <th>#</th><th>ক্লায়েন্ট</th><th>সার্ভিস</th><th>স্পিড</th><th>স্ট্যাটাস</th><th>Drive</th><th>Action</th>
   </tr></thead><tbody>`;
@@ -400,13 +421,10 @@ function renderTable() {
   wrap.innerHTML = h + '</tbody></table>';
 }
 
-/* ── STATUS ── */
+/* ── STATUS UPDATE — Firestore ── */
 async function chStatus(id, status) {
   try {
-    await fetch(API+'/'+id+'?secret='+SECRET, {
-      method:'PATCH', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({status})
-    });
+    await updateDoc(doc(db, 'orders', id), { status });
     const o = orders.find(o => o.id===id);
     if (o) o.status = status;
     renderAll();
@@ -414,135 +432,128 @@ async function chStatus(id, status) {
     toast('✅','স্ট্যাটাস আপডেট হয়েছে!');
   } catch { toast('❌','আপডেট ব্যর্থ।',true); }
 }
+window.chStatus = chStatus;
 
-/* ── DELETE ── */
+/* ── DELETE — Firestore ── */
 async function delOrder(id, e) {
   e?.stopPropagation();
   if (!confirm('এই অর্ডারটি চিরতরে মুছে ফেলবেন?')) return;
   try {
-    await fetch(API+'/'+id+'?secret='+SECRET, {method:'DELETE'});
+    await deleteDoc(doc(db, 'orders', id));
     orders = orders.filter(o => o.id !== id);
     renderAll();
     if (openId === id) closeMod();
     toast('🗑️','অর্ডার মুছে ফেলা হয়েছে।');
   } catch { toast('❌','মুছতে পারা যায়নি।',true); }
 }
+window.delOrder = delOrder;
 
 /* ── MODAL ── */
 function openMod(id) {
+  openId = id;
   const o = orders.find(o => o.id===id);
   if (!o) return;
-  openId = id;
-  const dt = o.createdAt ? new Date(o.createdAt).toLocaleString('en-GB') : '—';
-  document.getElementById('mName').textContent = o.name || 'অর্ডার বিস্তারিত';
-  document.getElementById('mDate').textContent = 'জমা দেওয়া হয়েছে: ' + dt;
-  document.getElementById('mGrid').innerHTML = `
-    <div class="mf"><label>পুরো নাম</label><div class="mv">${x(o.name||'—')}</div></div>
-    <div class="mf"><label>ইমেইল</label><div class="mv">${x(o.email||'—')}</div></div>
-    <div class="mf"><label>WhatsApp</label><div class="mv">${x(o.phone||'—')}</div></div>
-    <div class="mf"><label>ক্যাটাগরি</label><div class="mv"><span class="ctag">${x(o.category||'—')}</span></div></div>
-    <div class="mf"><label>ভিডিও দৈর্ঘ্য</label><div class="mv">${x(o.length||'—')}</div></div>
-    <div class="mf"><label>ডেলিভারি স্পিড</label><div class="mv">${x(o.speed||'—')}</div></div>
-    <div class="mf full"><label>Drive লিংক</label>
-      <div class="mv">${o.driveLink?`<a href="${x(o.driveLink)}" target="_blank" style="color:#60a5fa;">${x(o.driveLink)}</a>`:'—'}</div>
-    </div>`;
-  document.getElementById('mInst').textContent = o.instructions || 'কোনো নির্দেশনা নেই।';
+  const fm = document.getElementById('mFrm');
+  fm.innerHTML = `
+    <div class="mrow"><span class="mlb">নাম</span><span>${x(o.name||'—')}</span></div>
+    <div class="mrow"><span class="mlb">ইমেইল</span><span>${x(o.email||'—')}</span></div>
+    <div class="mrow"><span class="mlb">ফোন</span><span>${x(o.phone||'—')}</span></div>
+    <div class="mrow"><span class="mlb">সার্ভিস</span><span>${x(o.category||'—')}</span></div>
+    <div class="mrow"><span class="mlb">দৈর্ঘ্য</span><span>${x(o.length||'—')}</span></div>
+    <div class="mrow"><span class="mlb">স্পিড</span><span>${x(o.speed||'—')}</span></div>
+    ${o.driveLink?`<div class="mrow"><span class="mlb">Drive</span><a href="${x(o.driveLink)}" target="_blank" style="color:#60a5fa;">🔗 খুলুন</a></div>`:''}
+    ${o.instructions?`<div class="mrow" style="flex-direction:column;gap:6px;"><span class="mlb">নির্দেশনা</span><span style="white-space:pre-wrap;">${x(o.instructions)}</span></div>`:''}
+    <div class="mrow"><span class="mlb">তারিখ</span><span>${o.createdAt ? new Date(o.createdAt).toLocaleString('bn-BD') : '—'}</span></div>`;
+
   document.getElementById('mNote').value = o.note || '';
-  document.getElementById('mSaveBtn').onclick = async () => {
-    const note = document.getElementById('mNote').value;
-    try {
-      await fetch(API+'/'+id+'?secret='+SECRET, {
-        method:'PATCH', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({note})
-      });
-      const ord = orders.find(o => o.id===id);
-      if (ord) ord.note = note;
-      toast('💾','নোট সেভ হয়েছে!');
-    } catch { toast('❌','সেভ ব্যর্থ।',true); }
-  };
   refreshModalBtns(id);
-  document.getElementById('mbg').classList.add('open');
+  document.getElementById('modal').classList.add('open');
 }
 
 function refreshModalBtns(id) {
   const o = orders.find(o => o.id===id);
   if (!o) return;
-  const st = [
-    {v:'new',l:'🆕 নতুন',c:'msb-new'},
-    {v:'in-progress',l:'⚙️ চলছে',c:'msb-prog'},
-    {v:'done',l:'✅ সম্পন্ন',c:'msb-done'},
-    {v:'cancelled',l:'❌ বাতিল',c:'msb-cancel'}
-  ];
-  document.getElementById('mSr').innerHTML = st.map(s =>
-    `<button class="msb ${s.c} ${o.status===s.v?'sel':''}" onclick="chStatus('${id}','${s.v}')">${s.l}</button>`
-  ).join('');
+  const sc = {new:'sp-new','in-progress':'sp-progress',done:'sp-done',cancelled:'sp-cancelled'};
+  document.getElementById('mStatus').innerHTML =
+    ['new','in-progress','done','cancelled'].map(s =>
+      `<button class="msb ${o.status===s?'active':''} ${sc[s]||''}" onclick="chStatus('${id}','${s}')">${
+        {new:'🆕 নতুন','in-progress':'⚙️ চলছে',done:'✅ সম্পন্ন',cancelled:'❌ বাতিল'}[s]
+      }</button>`
+    ).join('');
 }
+window.openMod = openMod;
 
-function closeMod() { document.getElementById('mbg').classList.remove('open'); openId=null; }
+function closeMod() {
+  document.getElementById('modal').classList.remove('open');
+  openId = null;
+}
+window.closeMod = closeMod;
 
-/* ── CHARTS ── */
+/* ── SAVE NOTE — Firestore ── */
+async function saveNote() {
+  if (!openId) return;
+  const note = document.getElementById('mNote').value;
+  try {
+    await updateDoc(doc(db, 'orders', openId), { note });
+    const o = orders.find(o => o.id===openId);
+    if (o) o.note = note;
+    toast('✅','নোট সেভ হয়েছে!');
+    document.getElementById('mSr').textContent = '✅ সংরক্ষিত';
+    setTimeout(() => document.getElementById('mSr').textContent = '', 2000);
+  } catch { toast('❌','সেভ ব্যর্থ।',true); }
+}
+window.saveNote = saveNote;
+
+/* ── CHARTS (simple) ── */
 function renderCharts() {
-  barChart('barCat', orders.map(o => o.category||'Other'));
-  barChart('barSpd', orders.map(o => o.speed||'Standard'));
-  barChart('barLen', orders.map(o => o.length||'Unknown'));
-  const smap = {
-    new:          {color:'#60a5fa',label:'নতুন'},
-    'in-progress':{color:'#fbbf24',label:'চলছে'},
-    done:         {color:'#4ade80',label:'সম্পন্ন'},
-    cancelled:    {color:'#f87171',label:'বাতিল'}
-  };
-  const total = orders.length||1;
-  const circ  = 2*Math.PI*46;
-  let off=0, arcs='', leg='';
-  Object.entries(smap).forEach(([k,s]) => {
-    const cnt  = orders.filter(o=>o.status===k).length;
-    const dash = (cnt/total)*circ;
-    if (dash > 0) {
-      arcs += `<circle cx="60" cy="60" r="46" fill="none" stroke="${s.color}" stroke-width="18"
-        stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-off}"
-        style="transform:rotate(-90deg);transform-origin:60px 60px"/>`;
-      off += dash;
-    }
-    leg += `<div class="dli"><div class="ddot" style="background:${s.color}"></div>${s.label}: <strong>${cnt}</strong></div>`;
+  const canvas = document.getElementById('chartArea');
+  if (!canvas) return;
+  const counts = {new:0,'in-progress':0,done:0,cancelled:0};
+  orders.forEach(o => { if(counts[o.status]!==undefined) counts[o.status]++; });
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const vals = Object.values(counts);
+  const total = vals.reduce((a,b)=>a+b,0) || 1;
+  const colors = ['#f97316','#3b82f6','#22c55e','#ef4444'];
+  const labels = ['নতুন','চলছে','সম্পন্ন','বাতিল'];
+  let startAngle = -Math.PI/2;
+  const cx = canvas.width/2, cy = canvas.height/2, r = Math.min(cx,cy)-20;
+  vals.forEach((v,i) => {
+    const slice = (v/total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,startAngle,startAngle+slice);
+    ctx.closePath();
+    ctx.fillStyle = colors[i];
+    ctx.fill();
+    startAngle += slice;
   });
-  document.getElementById('donut').innerHTML =
-    `<circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="18"/>${arcs}`;
-  document.getElementById('dleg').innerHTML = leg;
 }
 
-function barChart(id, vals) {
-  const cnt = {};
-  vals.forEach(v => { cnt[v]=(cnt[v]||0)+1; });
-  const max = Math.max(...Object.values(cnt),1);
-  document.getElementById(id).innerHTML = Object.entries(cnt)
-    .sort((a,b)=>b[1]-a[1]).slice(0,6)
-    .map(([k,v]) => `<div class="brow">
-      <div class="blbl">${x(k)}</div>
-      <div class="bwrap"><div class="bfill" style="width:${(v/max*100).toFixed(0)}%"></div></div>
-      <div class="bnum">${v}</div>
-    </div>`).join('') || '<div style="color:var(--mu);font-size:12px;padding:8px 0;">ডেটা নেই</div>';
-}
+/* ── SEARCH / FILTER ── */
+window.doSearch  = () => renderTable();
+window.filterStatus = (v) => { curFilter = v; renderTable(); };
+window.setStatusFilter = () => renderTable();
 
-/* ── TABS ── */
-function goTab(tab, el) {
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
-  document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
-  if(el) el.classList.add('active');
-  curFilter='all'; document.getElementById('stFilt').value='all';
-  document.getElementById('pgTitle').textContent = tab==='orders'?'সব অর্ডার':'Analytics';
-  if(tab==='analytics') renderCharts();
-}
-
+/* ── SIDEBAR FILTER ── */
 function sideFilter(status, el) {
-  curFilter=status; document.getElementById('stFilt').value=status;
-  goTab('orders',null);
+  curFilter = status;
   document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
   if(el) el.classList.add('active');
   const t={new:'নতুন অর্ডার','in-progress':'কাজ চলছে',done:'সম্পন্ন',cancelled:'বাতিল'};
   document.getElementById('pgTitle').textContent = t[status]||'অর্ডার';
   renderTable();
 }
+window.sideFilter = sideFilter;
+
+/* ── TABS ── */
+window.switchTab = (tabId) => {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab'+tabId)?.classList.add('active');
+  document.getElementById('panel'+tabId)?.classList.add('active');
+  if(tabId==='Analytics') renderCharts();
+};
 
 /* ── HELPERS ── */
 function x(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -554,6 +565,20 @@ function toast(ic, msg, err=false) {
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
+/* ── goTab (sidebar navigation) ── */
+function goTab(tab, el) {
+  document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(tab==='analytics') renderCharts();
+  else renderTable();
+}
+window.goTab        = goTab;
+window.renderTable  = renderTable;
+
+/* ── mSaveBtn click ── */
+document.getElementById('mSaveBtn')?.addEventListener('click', saveNote);
+
+
 </script>
 </body>
 </html>
