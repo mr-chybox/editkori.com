@@ -287,8 +287,7 @@ select.fsel option{background:var(--bg2);}
 
 <script type="module">
 /* ══════════════════════════════════════════════════════════
-   EditKori Admin Panel — Firebase Firestore version
-   সব কিছু একটি module script-এ — scope problem নেই
+   EditKori Admin Panel — Firebase Firestore
 ══════════════════════════════════════════════════════════ */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import {
@@ -304,16 +303,11 @@ const firebaseConfig = {
   messagingSenderId: "856421720283",
   appId:             "1:856421720283:web:88dd5643c9d6c694426cfe"
 };
-
 const fbApp = initializeApp(firebaseConfig, 'admin');
 const db    = getFirestore(fbApp);
 
-/* ── Admin password — এটা change করো ────────────────────── */
 const SECRET = 'EditKori_Admin_2025!';
-
-let orders    = [];
-let curFilter = 'all';
-let openId    = null;
+let orders = [], curFilter = 'all', openId = null;
 
 /* ── LOGIN ── */
 function login() {
@@ -339,7 +333,7 @@ document.getElementById('lpass').addEventListener('keydown', e => { if(e.key==='
 window.login  = login;
 window.logout = logout;
 
-/* ── LOAD — Firestore থেকে সব orders ── */
+/* ── LOAD ── */
 async function loadOrders() {
   document.getElementById('tblWrap').innerHTML = '<div class="spin"></div>';
   try {
@@ -348,20 +342,22 @@ async function loadOrders() {
     renderAll();
   } catch(err) {
     document.getElementById('tblWrap').innerHTML =
-      `<div class="empty"><div class="empty-ic">⚠️</div><div>Firestore connect হচ্ছে না।<br><small>${err.message}</small><br><br>Firebase Console → Firestore → Rules দেখো।</div></div>`;
+      `<div class="empty"><div class="empty-ic">⚠️</div><div>Firestore connect হচ্ছে না।<br><small>${err.message}</small><br><br>
+      <b>করণীয়:</b> Firebase Console → Firestore → Rules-এ<br>
+      <code>allow read, write: if true;</code> দাও এবং Publish করো।</div></div>`;
   }
 }
 window.loadOrders = loadOrders;
 
 function renderAll() {
   const n = v => orders.filter(o => o.status === v).length;
-  document.getElementById('stTotal').textContent = orders.length;
-  document.getElementById('stNew').textContent   = n('new');
-  document.getElementById('stProg').textContent  = n('in-progress');
-  document.getElementById('stDone').textContent  = n('done');
+  document.getElementById('stTotal').textContent  = orders.length;
+  document.getElementById('stNew').textContent    = n('new');
+  document.getElementById('stProg').textContent   = n('in-progress');
+  document.getElementById('stDone').textContent   = n('done');
   document.getElementById('newBadge').textContent = n('new');
   renderTable();
-  if (document.getElementById('tabAnalytics').classList.contains('active')) renderCharts();
+  if (document.getElementById('tabAnalytics')?.classList.contains('active')) renderCharts();
 }
 
 /* ── TABLE ── */
@@ -369,7 +365,6 @@ function renderTable() {
   const srch  = (document.getElementById('srch').value || '').toLowerCase();
   const sfilt = document.getElementById('stFilt').value;
   const filt  = curFilter !== 'all' ? curFilter : sfilt;
-
   const rows = orders.filter(o => {
     const ms = filt === 'all' || o.status === filt;
     const mq = !srch ||
@@ -378,18 +373,15 @@ function renderTable() {
       (o.category||'').toLowerCase().includes(srch);
     return ms && mq;
   });
-
   const wrap = document.getElementById('tblWrap');
   if (!rows.length) {
     wrap.innerHTML = '<div class="empty"><div class="empty-ic">📭</div><div>কোনো অর্ডার পাওয়া যায়নি।</div></div>';
     return;
   }
-
   const sc = {new:'sp-new','in-progress':'sp-progress',done:'sp-done',cancelled:'sp-cancelled'};
   let h = `<table class="tbl"><thead><tr>
     <th>#</th><th>ক্লায়েন্ট</th><th>সার্ভিস</th><th>স্পিড</th><th>স্ট্যাটাস</th><th>Drive</th><th>Action</th>
   </tr></thead><tbody>`;
-
   rows.forEach((o, i) => {
     const cls = sc[o.status] || 'sp-new';
     const dt  = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
@@ -410,18 +402,20 @@ function renderTable() {
           <option value="cancelled"   ${o.status==='cancelled'?'selected':''}>❌ বাতিল</option>
         </select>
       </div></td>
-      <td>${o.driveLink?`<a class="dlink" href="${x(o.driveLink)}" target="_blank">🔗 খুলুন</a>`:'<span style="color:var(--mu)">—</span>'}</td>
+      <td>${o.driveLink
+        ? `<a class="dlink" href="${x(o.driveLink)}" target="_blank">🔗 খুলুন</a>`
+        : '<span style="color:var(--mu);font-size:11px;">—</span>'}</td>
       <td style="display:flex;gap:5px;">
         <button class="ab ab-view" onclick="openMod('${o.id}')">👁 দেখুন</button>
         <button class="ab ab-del"  onclick="delOrder('${o.id}',event)">🗑</button>
       </td>
     </tr>`;
   });
-
   wrap.innerHTML = h + '</tbody></table>';
 }
+window.renderTable = renderTable;
 
-/* ── STATUS UPDATE — Firestore ── */
+/* ── STATUS ── */
 async function chStatus(id, status) {
   try {
     await updateDoc(doc(db, 'orders', id), { status });
@@ -434,7 +428,7 @@ async function chStatus(id, status) {
 }
 window.chStatus = chStatus;
 
-/* ── DELETE — Firestore ── */
+/* ── DELETE ── */
 async function delOrder(id, e) {
   e?.stopPropagation();
   if (!confirm('এই অর্ডারটি চিরতরে মুছে ফেলবেন?')) return;
@@ -453,23 +447,20 @@ function openMod(id) {
   openId = id;
   const o = orders.find(o => o.id===id);
   if (!o) return;
-  const fm = document.getElementById('mFrm');
-  fm.innerHTML = `
+  document.getElementById('mFrm').innerHTML = `
     <div class="mrow"><span class="mlb">নাম</span><span>${x(o.name||'—')}</span></div>
     <div class="mrow"><span class="mlb">ইমেইল</span><span>${x(o.email||'—')}</span></div>
     <div class="mrow"><span class="mlb">ফোন</span><span>${x(o.phone||'—')}</span></div>
     <div class="mrow"><span class="mlb">সার্ভিস</span><span>${x(o.category||'—')}</span></div>
     <div class="mrow"><span class="mlb">দৈর্ঘ্য</span><span>${x(o.length||'—')}</span></div>
     <div class="mrow"><span class="mlb">স্পিড</span><span>${x(o.speed||'—')}</span></div>
-    ${o.driveLink?`<div class="mrow"><span class="mlb">Drive</span><a href="${x(o.driveLink)}" target="_blank" style="color:#60a5fa;">🔗 খুলুন</a></div>`:''}
+    ${o.driveLink?`<div class="mrow"><span class="mlb">Drive (user)</span><a href="${x(o.driveLink)}" target="_blank" style="color:#60a5fa;word-break:break-all;">🔗 ${x(o.driveLink)}</a></div>`:''}
     ${o.instructions?`<div class="mrow" style="flex-direction:column;gap:6px;"><span class="mlb">নির্দেশনা</span><span style="white-space:pre-wrap;">${x(o.instructions)}</span></div>`:''}
-    <div class="mrow"><span class="mlb">তারিখ</span><span>${o.createdAt ? new Date(o.createdAt).toLocaleString('bn-BD') : '—'}</span></div>`;
-
+    <div class="mrow"><span class="mlb">তারিখ</span><span>${o.createdAt?new Date(o.createdAt).toLocaleString('bn-BD'):'—'}</span></div>`;
   document.getElementById('mNote').value = o.note || '';
   refreshModalBtns(id);
   document.getElementById('modal').classList.add('open');
 }
-
 function refreshModalBtns(id) {
   const o = orders.find(o => o.id===id);
   if (!o) return;
@@ -481,15 +472,11 @@ function refreshModalBtns(id) {
       }</button>`
     ).join('');
 }
+function closeMod() { document.getElementById('modal').classList.remove('open'); openId = null; }
 window.openMod = openMod;
-
-function closeMod() {
-  document.getElementById('modal').classList.remove('open');
-  openId = null;
-}
 window.closeMod = closeMod;
 
-/* ── SAVE NOTE — Firestore ── */
+/* ── SAVE NOTE ── */
 async function saveNote() {
   if (!openId) return;
   const note = document.getElementById('mNote').value;
@@ -502,40 +489,36 @@ async function saveNote() {
     setTimeout(() => document.getElementById('mSr').textContent = '', 2000);
   } catch { toast('❌','সেভ ব্যর্থ।',true); }
 }
-window.saveNote = saveNote;
+document.getElementById('mSaveBtn')?.addEventListener('click', saveNote);
 
-/* ── CHARTS (simple) ── */
+/* ── CHARTS ── */
 function renderCharts() {
   const canvas = document.getElementById('chartArea');
   if (!canvas) return;
   const counts = {new:0,'in-progress':0,done:0,cancelled:0};
   orders.forEach(o => { if(counts[o.status]!==undefined) counts[o.status]++; });
+  const vals = Object.values(counts);
+  const total = vals.reduce((a,b)=>a+b,0)||1;
+  const colors = ['#f97316','#3b82f6','#22c55e','#ef4444'];
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  const vals = Object.values(counts);
-  const total = vals.reduce((a,b)=>a+b,0) || 1;
-  const colors = ['#f97316','#3b82f6','#22c55e','#ef4444'];
-  const labels = ['নতুন','চলছে','সম্পন্ন','বাতিল'];
   let startAngle = -Math.PI/2;
-  const cx = canvas.width/2, cy = canvas.height/2, r = Math.min(cx,cy)-20;
-  vals.forEach((v,i) => {
-    const slice = (v/total) * 2 * Math.PI;
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
+  const cx=canvas.width/2, cy=canvas.height/2, r=Math.min(cx,cy)-20;
+  vals.forEach((v,i)=>{
+    const slice=(v/total)*2*Math.PI;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
     ctx.arc(cx,cy,r,startAngle,startAngle+slice);
-    ctx.closePath();
-    ctx.fillStyle = colors[i];
-    ctx.fill();
-    startAngle += slice;
+    ctx.closePath(); ctx.fillStyle=colors[i]; ctx.fill();
+    startAngle+=slice;
   });
 }
 
-/* ── SEARCH / FILTER ── */
-window.doSearch  = () => renderTable();
-window.filterStatus = (v) => { curFilter = v; renderTable(); };
-window.setStatusFilter = () => renderTable();
-
-/* ── SIDEBAR FILTER ── */
+/* ── NAVIGATION ── */
+function goTab(tab, el) {
+  document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(tab==='analytics') renderCharts(); else renderTable();
+}
 function sideFilter(status, el) {
   curFilter = status;
   document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
@@ -544,16 +527,11 @@ function sideFilter(status, el) {
   document.getElementById('pgTitle').textContent = t[status]||'অর্ডার';
   renderTable();
 }
-window.sideFilter = sideFilter;
-
-/* ── TABS ── */
-window.switchTab = (tabId) => {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab'+tabId)?.classList.add('active');
-  document.getElementById('panel'+tabId)?.classList.add('active');
-  if(tabId==='Analytics') renderCharts();
-};
+window.goTab       = goTab;
+window.sideFilter  = sideFilter;
+window.doSearch    = () => renderTable();
+window.setStatusFilter = () => renderTable();
+window.filterStatus = (v) => { curFilter=v; renderTable(); };
 
 /* ── HELPERS ── */
 function x(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -565,20 +543,6 @@ function toast(ic, msg, err=false) {
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
-/* ── goTab (sidebar navigation) ── */
-function goTab(tab, el) {
-  document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
-  if(el) el.classList.add('active');
-  if(tab==='analytics') renderCharts();
-  else renderTable();
-}
-window.goTab        = goTab;
-window.renderTable  = renderTable;
-
-/* ── mSaveBtn click ── */
-document.getElementById('mSaveBtn')?.addEventListener('click', saveNote);
-
-
 </script>
 </body>
 </html>
