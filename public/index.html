@@ -1530,18 +1530,18 @@ footer {
   opacity:0; pointer-events:none; transform:translateY(-8px);
   transition:all .25s cubic-bezier(.16,1,.3,1); z-index:200;
 }
-.nav-user:hover .user-dropdown { opacity:1; pointer-events:auto; transform:translateY(0); }
+.nav-user.open .user-dropdown { opacity:1; pointer-events:auto; transform:translateY(0); }
 .ud-head  { padding:10px 12px 8px; border-bottom:1px solid rgba(249,115,22,.08); margin-bottom:4px; }
 .ud-name  { font-size:13px; font-weight:700; }
 .ud-email { font-size:11px; color:var(--muted); margin-top:2px; word-break:break-all; }
-.ud-item  { display:flex; align-items:center; gap:9px; padding:9px 12px; border-radius:9px; font-size:13px; color:var(--muted); cursor:none; transition:all .2s; }
+.ud-item  { display:flex; align-items:center; gap:9px; padding:9px 12px; border-radius:9px; font-size:13px; color:var(--muted); cursor:pointer; transition:all .2s; }
 .ud-item:hover { background:rgba(249,115,22,.07); color:var(--txt); }
 .ud-item.danger:hover { background:rgba(239,68,68,.1); color:#f87171; }
 .nav-signin {
   padding:9px 20px; border-radius:100px;
   background:rgba(249,115,22,.1); border:1px solid rgba(249,115,22,.25);
   color:var(--orange); font-size:13px; font-weight:600;
-  cursor:none; transition:all .25s; white-space:nowrap;
+  cursor:pointer; transition:all .25s; white-space:nowrap;
 }
 .nav-signin:hover { background:rgba(249,115,22,.2); transform:translateY(-1px); }
 
@@ -1629,9 +1629,11 @@ body.light-mode .apb { background: #f5f4fc; border-color: rgba(249,115,22,.15); 
   background: var(--bg2); border: 1px solid rgba(249,115,22,.08);
   border-radius: 18px; padding: 22px 24px;
   display: grid; grid-template-columns: auto 1fr auto;
-  gap: 16px; align-items: center;
+  gap: 16px; align-items: start;
   transition: border-color .3s, transform .3s;
 }
+.mo-card > .mo-card-icon,
+.mo-card > .mo-card-info > .mo-card-title { align-self: center; }
 .mo-card:hover { border-color: rgba(249,115,22,.22); transform: translateX(4px); }
 .mo-card-icon  {
   width: 48px; height: 48px; border-radius: 13px;
@@ -1731,8 +1733,10 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
 .mo-card{cursor:pointer}
 .mo-card-note{display:none;grid-column:1/-1;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px 14px;font-size:13px;color:#4ade80;margin-top:6px;white-space:pre-wrap}
 .mo-card.expanded .mo-card-note{display:block}
-.mo-status-timeline{display:none;grid-column:1/-1;margin-top:12px}
+.mo-status-timeline{display:none;grid-column:1/-1;margin-top:12px;width:100%}
 .mo-card.expanded .mo-status-timeline{display:flex}
+.mo-card-note{display:none;grid-column:1/-1;width:100%}
+.mo-card.expanded .mo-card-note{display:block}
 .mo-tl-step{flex:1;text-align:center;font-size:11px;color:var(--muted);position:relative;padding-top:28px}
 .mo-tl-step::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);background:var(--bg1);transition:all .3s}
 .mo-tl-step::after{content:'';position:absolute;top:18px;left:calc(50% + 9px);width:calc(100% - 18px);height:2px;background:rgba(255,255,255,.1)}
@@ -1821,15 +1825,15 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
     <button class="nav-signin" id="navSigninBtn" onclick="openAuth()">Sign In →</button>
 
     <!-- LOGGED IN: show avatar + dropdown (hidden by default) -->
-    <div class="nav-user" id="navUser" style="display:none;">
+    <div class="nav-user" id="navUser" style="display:none;" onclick="toggleProfileMenu(event)">
       <div class="nav-avatar" id="navAvatar">U</div>
       <span class="nav-user-name" id="navUserName">User</span>
-      <div class="user-dropdown">
+      <div class="user-dropdown" onclick="event.stopPropagation()">
         <div class="ud-head">
           <div class="ud-name"  id="udName">—</div>
           <div class="ud-email" id="udEmail">—</div>
         </div>
-        <div class="ud-item" onclick="document.getElementById('myOrders').scrollIntoView({behavior:'smooth'})">📋 My Orders</div>
+        <div class="ud-item" onclick="goToMyOrders()">📋 My Orders</div>
         <div class="ud-item danger" onclick="signOutUser()">🚪 Sign Out</div>
       </div>
     </div>
@@ -2438,39 +2442,6 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 
-/* ═══════════════════════════════════════
-   FIRESTORE HELPERS (called from HTML)
-═══════════════════════════════════════ */
-async function _addOrder(data) {
-  data.status    = 'new';
-  data.createdAt = new Date().toISOString();
-  await addDoc(collection(db, 'orders'), data);
-}
-
-async function _updateOrderDrive(orderId, driveLink) {
-  await updateDoc(doc(db, 'orders', orderId), { driveLink });
-}
-
-/* ═══════════════════════════════════════
-   DRIVE LINK SUBMIT (user panel)
-═══════════════════════════════════════ */
-window.submitDriveLink = async function() {
-  const orderId = document.getElementById('moDriveOrderSel').value;
-  const link    = document.getElementById('moDriveInput').value.trim();
-  const msgEl   = document.getElementById('moDriveMsg');
-  if (!orderId) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ একটা order সিলেক্ট করো।'; msgEl.style.display='block'; return; }
-  if (!link || !link.startsWith('http')) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ সঠিক Drive link দাও।'; msgEl.style.display='block'; return; }
-  try {
-    await _updateOrderDrive(orderId, link);
-    msgEl.style.color='#4ade80';
-    msgEl.textContent='✅ পাঠানো হয়েছে! Admin দেখতে পাবে।';
-    msgEl.style.display='block';
-    document.getElementById('moDriveInput').value='';
-    if (window._fbCurrentUser) await loadMyOrders(window._fbCurrentUser);
-    setTimeout(() => msgEl.style.display='none', 4000);
-  } catch { msgEl.style.color='#f87171'; msgEl.textContent='❌ পাঠানো হয়নি।'; msgEl.style.display='block'; }
-};
-
 /* ═══ Regular page functions ════════════════════════════ */
 /* ── 1. CUSTOM CURSOR ─────────────────── */
 var dot  = document.getElementById('c-dot');
@@ -2955,6 +2926,32 @@ const analytics= getAnalytics(app);
 const auth     = getAuth(app);
 const db       = getFirestore(app);
 
+/* ═══ Firestore helpers — db ready ═══════════════════════ */
+async function _addOrder(data) {
+  data.status    = 'new';
+  data.createdAt = new Date().toISOString();
+  await addDoc(collection(db, 'orders'), data);
+}
+async function _updateOrderDrive(orderId, driveLink) {
+  await updateDoc(doc(db, 'orders', orderId), { driveLink });
+}
+window.submitDriveLink = async function() {
+  const orderId = document.getElementById('moDriveOrderSel').value;
+  const link    = document.getElementById('moDriveInput').value.trim();
+  const msgEl   = document.getElementById('moDriveMsg');
+  if (!orderId) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ একটা order বেছে নাও।'; msgEl.style.display='block'; return; }
+  if (!link || !link.startsWith('http')) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ সঠিক Drive link দাও (https দিয়ে শুরু)।'; msgEl.style.display='block'; return; }
+  try {
+    await _updateOrderDrive(orderId, link);
+    msgEl.style.color='#4ade80';
+    msgEl.textContent='✅ পাঠানো হয়েছে! Admin দেখতে পাবে।';
+    msgEl.style.display='block';
+    document.getElementById('moDriveInput').value='';
+    if (window._fbCurrentUser) await loadMyOrders(window._fbCurrentUser);
+    setTimeout(() => msgEl.style.display='none', 4000);
+  } catch(e) { msgEl.style.color='#f87171'; msgEl.textContent='❌ পাঠানো হয়নি: '+e.message; msgEl.style.display='block'; }
+};
+
 /* ── Providers ── */
 const googleProv    = new GoogleAuthProvider();
 const facebookProv  = new FacebookAuthProvider();
@@ -3083,6 +3080,9 @@ onAuthStateChanged(auth, async (user) => {
   const moAvatarLg = document.getElementById('moAvatarLg');
   const moUname    = document.getElementById('moUname');
 
+  const isFirstLoad = !window._authInitialized;
+  window._authInitialized = true;
+
   if (user) {
     /* ── Navbar ── */
     signinBtn.style.display = 'none';
@@ -3117,10 +3117,10 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     await saveUserData(user);
-    // ✅ Login success animation
+    // ✅ Login success animation — শুধু manual login-এ দেখাবে, page reload-এ নয়
     const ov = document.getElementById('loginSuccessOverlay');
-    if (ov) {
-      const firstName = (user.displayName || user.email?.split('@')[0] || 'User').split(' ')[0];
+    const firstName = (user.displayName || user.email?.split('@')[0] || 'User').split(' ')[0];
+    if (ov && !isFirstLoad) {
       document.getElementById('lsoName').textContent = `স্বাগতম, ${firstName}! 🎉`;
       ov.classList.add('show');
       closeAuth();
@@ -3128,7 +3128,9 @@ onAuthStateChanged(auth, async (user) => {
         ov.classList.remove('show');
         document.getElementById('myOrders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 2200);
-    } else { closeAuth(); }
+    } else {
+      closeAuth();
+    }
     await loadMyOrders(user);
   } else {
     /* ── Logged out ── */
@@ -3147,6 +3149,20 @@ onAuthStateChanged(auth, async (user) => {
    MODAL HELPERS
 ══════════════════════════════════════ */
 window.openAuth  = () => { document.getElementById('authModal').classList.add('open'); clearErr(); hideAllForms(); };
+
+/* ── Profile dropdown toggle ── */
+window.toggleProfileMenu = function(e) {
+  e.stopPropagation();
+  document.getElementById('navUser').classList.toggle('open');
+};
+window.goToMyOrders = function() {
+  document.getElementById('navUser').classList.remove('open');
+  document.getElementById('myOrders').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+// Click anywhere else closes dropdown
+document.addEventListener('click', () => {
+  document.getElementById('navUser')?.classList.remove('open');
+});
 window.closeAuth = () => { document.getElementById('authModal').classList.remove('open'); };
 document.getElementById('authModal').addEventListener('click', e => {
   if (e.target === document.getElementById('authModal')) closeAuth();
