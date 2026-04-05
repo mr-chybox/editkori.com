@@ -286,9 +286,6 @@ select.fsel option{background:var(--bg2);}
 <div id="tk"><span id="tkIc">✅</span><span id="tkMsg">সম্পন্ন!</span></div>
 
 <script type="module">
-/* ══════════════════════════════════════════════════════════
-   EditKori Admin Panel — Firebase Firestore
-══════════════════════════════════════════════════════════ */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import {
   getFirestore, collection, query, orderBy,
@@ -310,7 +307,7 @@ const SECRET = 'EditKori_Admin_2025!';
 let orders = [], curFilter = 'all', openId = null;
 
 /* ── LOGIN ── */
-function login() {
+window.login = function() {
   const p = document.getElementById('lpass').value.trim();
   if (p === SECRET) {
     document.getElementById('loginScreen').style.display = 'none';
@@ -324,17 +321,15 @@ function login() {
     e.textContent = '❌ পাসওয়ার্ড ভুল।';
     setTimeout(() => e.textContent = '', 2500);
   }
-}
-function logout() {
+};
+window.logout = function() {
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('lpass').value = '';
-}
-document.getElementById('lpass').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
-window.login  = login;
-window.logout = logout;
+};
+document.getElementById('lpass').addEventListener('keydown', e => { if(e.key==='Enter') window.login(); });
 
 /* ── LOAD ── */
-async function loadOrders() {
+window.loadOrders = async function() {
   document.getElementById('tblWrap').innerHTML = '<div class="spin"></div>';
   try {
     const snap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')));
@@ -342,12 +337,9 @@ async function loadOrders() {
     renderAll();
   } catch(err) {
     document.getElementById('tblWrap').innerHTML =
-      `<div class="empty"><div class="empty-ic">⚠️</div><div>Firestore connect হচ্ছে না।<br><small>${err.message}</small><br><br>
-      <b>করণীয়:</b> Firebase Console → Firestore → Rules-এ<br>
-      <code>allow read, write: if true;</code> দাও এবং Publish করো।</div></div>`;
+      `<div class="empty"><div class="empty-ic">⚠️</div><div>Firestore connect হচ্ছে না।<br><small>${err.message}</small><br><br>Firebase Console → Firestore → Rules → <code>allow read, write: if true;</code></div></div>`;
   }
-}
-window.loadOrders = loadOrders;
+};
 
 function renderAll() {
   const n = v => orders.filter(o => o.status === v).length;
@@ -357,54 +349,38 @@ function renderAll() {
   document.getElementById('stDone').textContent   = n('done');
   document.getElementById('newBadge').textContent = n('new');
   renderTable();
-  if (document.getElementById('tabAnalytics')?.classList.contains('active')) renderCharts();
 }
 
 /* ── TABLE ── */
-function renderTable() {
+window.renderTable = function() {
   const srch  = (document.getElementById('srch').value || '').toLowerCase();
   const sfilt = document.getElementById('stFilt').value;
   const filt  = curFilter !== 'all' ? curFilter : sfilt;
   const rows = orders.filter(o => {
     const ms = filt === 'all' || o.status === filt;
-    const mq = !srch ||
-      (o.name||'').toLowerCase().includes(srch) ||
-      (o.email||'').toLowerCase().includes(srch) ||
-      (o.category||'').toLowerCase().includes(srch);
+    const mq = !srch || (o.name||'').toLowerCase().includes(srch) ||
+      (o.email||'').toLowerCase().includes(srch) || (o.category||'').toLowerCase().includes(srch);
     return ms && mq;
   });
   const wrap = document.getElementById('tblWrap');
-  if (!rows.length) {
-    wrap.innerHTML = '<div class="empty"><div class="empty-ic">📭</div><div>কোনো অর্ডার পাওয়া যায়নি।</div></div>';
-    return;
-  }
+  if (!rows.length) { wrap.innerHTML = '<div class="empty"><div class="empty-ic">📭</div><div>কোনো অর্ডার নেই।</div></div>'; return; }
   const sc = {new:'sp-new','in-progress':'sp-progress',done:'sp-done',cancelled:'sp-cancelled'};
-  let h = `<table class="tbl"><thead><tr>
-    <th>#</th><th>ক্লায়েন্ট</th><th>সার্ভিস</th><th>স্পিড</th><th>স্ট্যাটাস</th><th>Drive</th><th>Action</th>
-  </tr></thead><tbody>`;
+  let h = `<table class="tbl"><thead><tr><th>#</th><th>ক্লায়েন্ট</th><th>সার্ভিস</th><th>স্পিড</th><th>স্ট্যাটাস</th><th>Drive</th><th>Action</th></tr></thead><tbody>`;
   rows.forEach((o, i) => {
     const cls = sc[o.status] || 'sp-new';
     const dt  = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
     h += `<tr>
-      <td style="color:var(--mu);font-size:11px;">${i+1}<br/><small>${dt}</small></td>
-      <td><div class="cc">
-        <span class="cn">${x(o.name||'—')}</span>
-        <span class="ce">${x(o.email||'')}</span>
-        ${o.phone?`<span class="ce">📱 ${x(o.phone)}</span>`:''}
-      </div></td>
+      <td style="color:var(--mu);font-size:11px;">${i+1}<br><small>${dt}</small></td>
+      <td><div class="cc"><span class="cn">${x(o.name||'—')}</span><span class="ce">${x(o.email||'')}</span>${o.phone?`<span class="ce">📱 ${x(o.phone)}</span>`:''}</div></td>
       <td><span class="ctag">${x(o.category||'—')}</span></td>
       <td style="font-size:11px;color:var(--mu);">${x(o.speed||'—')}</td>
-      <td><div class="sp ${cls}">
-        <select onchange="chStatus('${o.id}',this.value)" onclick="event.stopPropagation()">
-          <option value="new"         ${o.status==='new'?'selected':''}>🆕 নতুন</option>
-          <option value="in-progress" ${o.status==='in-progress'?'selected':''}>⚙️ চলছে</option>
-          <option value="done"        ${o.status==='done'?'selected':''}>✅ সম্পন্ন</option>
-          <option value="cancelled"   ${o.status==='cancelled'?'selected':''}>❌ বাতিল</option>
-        </select>
-      </div></td>
-      <td>${o.driveLink
-        ? `<a class="dlink" href="${x(o.driveLink)}" target="_blank">🔗 খুলুন</a>`
-        : '<span style="color:var(--mu);font-size:11px;">—</span>'}</td>
+      <td><div class="sp ${cls}"><select onchange="chStatus('${o.id}',this.value)" onclick="event.stopPropagation()">
+        <option value="new"         ${o.status==='new'?'selected':''}>🆕 নতুন</option>
+        <option value="in-progress" ${o.status==='in-progress'?'selected':''}>⚙️ চলছে</option>
+        <option value="done"        ${o.status==='done'?'selected':''}>✅ সম্পন্ন</option>
+        <option value="cancelled"   ${o.status==='cancelled'?'selected':''}>❌ বাতিল</option>
+      </select></div></td>
+      <td>${o.driveLink?`<a class="dlink" href="${x(o.driveLink)}" target="_blank">🔗 খুলুন</a>`:'<span style="color:var(--mu)">—</span>'}</td>
       <td style="display:flex;gap:5px;">
         <button class="ab ab-view" onclick="openMod('${o.id}')">👁 দেখুন</button>
         <button class="ab ab-del"  onclick="delOrder('${o.id}',event)">🗑</button>
@@ -412,130 +388,90 @@ function renderTable() {
     </tr>`;
   });
   wrap.innerHTML = h + '</tbody></table>';
-}
-window.renderTable = renderTable;
+};
 
 /* ── STATUS ── */
-async function chStatus(id, status) {
+window.chStatus = async function(id, status) {
   try {
-    await updateDoc(doc(db, 'orders', id), { status });
-    const o = orders.find(o => o.id===id);
-    if (o) o.status = status;
-    renderAll();
-    if (openId === id) refreshModalBtns(id);
-    toast('✅','স্ট্যাটাস আপডেট হয়েছে!');
-  } catch { toast('❌','আপডেট ব্যর্থ।',true); }
-}
-window.chStatus = chStatus;
+    await updateDoc(doc(db,'orders',id), { status });
+    const o = orders.find(o=>o.id===id); if(o) o.status=status;
+    renderAll(); if(openId===id) refreshModalBtns(id);
+    toast('✅','স্ট্যাটাস আপডেট!');
+  } catch { toast('❌','ব্যর্থ।',true); }
+};
 
 /* ── DELETE ── */
-async function delOrder(id, e) {
+window.delOrder = async function(id, e) {
   e?.stopPropagation();
-  if (!confirm('এই অর্ডারটি চিরতরে মুছে ফেলবেন?')) return;
+  if(!confirm('মুছে ফেলবেন?')) return;
   try {
-    await deleteDoc(doc(db, 'orders', id));
-    orders = orders.filter(o => o.id !== id);
-    renderAll();
-    if (openId === id) closeMod();
-    toast('🗑️','অর্ডার মুছে ফেলা হয়েছে।');
-  } catch { toast('❌','মুছতে পারা যায়নি।',true); }
-}
-window.delOrder = delOrder;
+    await deleteDoc(doc(db,'orders',id));
+    orders=orders.filter(o=>o.id!==id); renderAll();
+    if(openId===id) closeMod();
+    toast('🗑️','মুছে ফেলা হয়েছে।');
+  } catch { toast('❌','মুছতে পারেনি।',true); }
+};
 
 /* ── MODAL ── */
-function openMod(id) {
-  openId = id;
-  const o = orders.find(o => o.id===id);
-  if (!o) return;
-  document.getElementById('mFrm').innerHTML = `
+window.openMod = function(id) {
+  openId=id; const o=orders.find(o=>o.id===id); if(!o) return;
+  document.getElementById('mFrm').innerHTML=`
     <div class="mrow"><span class="mlb">নাম</span><span>${x(o.name||'—')}</span></div>
     <div class="mrow"><span class="mlb">ইমেইল</span><span>${x(o.email||'—')}</span></div>
     <div class="mrow"><span class="mlb">ফোন</span><span>${x(o.phone||'—')}</span></div>
     <div class="mrow"><span class="mlb">সার্ভিস</span><span>${x(o.category||'—')}</span></div>
     <div class="mrow"><span class="mlb">দৈর্ঘ্য</span><span>${x(o.length||'—')}</span></div>
     <div class="mrow"><span class="mlb">স্পিড</span><span>${x(o.speed||'—')}</span></div>
-    ${o.driveLink?`<div class="mrow"><span class="mlb">Drive (user)</span><a href="${x(o.driveLink)}" target="_blank" style="color:#60a5fa;word-break:break-all;">🔗 ${x(o.driveLink)}</a></div>`:''}
+    ${o.driveLink?`<div class="mrow"><span class="mlb">🔗 Drive (user)</span><a href="${x(o.driveLink)}" target="_blank" style="color:#60a5fa;word-break:break-all;">${x(o.driveLink)}</a></div>`:''}
     ${o.instructions?`<div class="mrow" style="flex-direction:column;gap:6px;"><span class="mlb">নির্দেশনা</span><span style="white-space:pre-wrap;">${x(o.instructions)}</span></div>`:''}
     <div class="mrow"><span class="mlb">তারিখ</span><span>${o.createdAt?new Date(o.createdAt).toLocaleString('bn-BD'):'—'}</span></div>`;
-  document.getElementById('mNote').value = o.note || '';
+  document.getElementById('mNote').value=o.note||'';
   refreshModalBtns(id);
   document.getElementById('modal').classList.add('open');
-}
+};
 function refreshModalBtns(id) {
-  const o = orders.find(o => o.id===id);
-  if (!o) return;
-  const sc = {new:'sp-new','in-progress':'sp-progress',done:'sp-done',cancelled:'sp-cancelled'};
-  document.getElementById('mStatus').innerHTML =
-    ['new','in-progress','done','cancelled'].map(s =>
+  const o=orders.find(o=>o.id===id); if(!o) return;
+  const sc={new:'sp-new','in-progress':'sp-progress',done:'sp-done',cancelled:'sp-cancelled'};
+  document.getElementById('mStatus').innerHTML=
+    ['new','in-progress','done','cancelled'].map(s=>
       `<button class="msb ${o.status===s?'active':''} ${sc[s]||''}" onclick="chStatus('${id}','${s}')">${
         {new:'🆕 নতুন','in-progress':'⚙️ চলছে',done:'✅ সম্পন্ন',cancelled:'❌ বাতিল'}[s]
-      }</button>`
-    ).join('');
+      }</button>`).join('');
 }
-function closeMod() { document.getElementById('modal').classList.remove('open'); openId = null; }
-window.openMod = openMod;
-window.closeMod = closeMod;
-
-/* ── SAVE NOTE ── */
-async function saveNote() {
-  if (!openId) return;
-  const note = document.getElementById('mNote').value;
+window.closeMod = function() { document.getElementById('modal').classList.remove('open'); openId=null; };
+document.getElementById('mSaveBtn')?.addEventListener('click', async () => {
+  if(!openId) return;
+  const note=document.getElementById('mNote').value;
   try {
-    await updateDoc(doc(db, 'orders', openId), { note });
-    const o = orders.find(o => o.id===openId);
-    if (o) o.note = note;
-    toast('✅','নোট সেভ হয়েছে!');
-    document.getElementById('mSr').textContent = '✅ সংরক্ষিত';
-    setTimeout(() => document.getElementById('mSr').textContent = '', 2000);
+    await updateDoc(doc(db,'orders',openId),{note});
+    const o=orders.find(o=>o.id===openId); if(o) o.note=note;
+    toast('✅','নোট সেভ!');
+    document.getElementById('mSr').textContent='✅ সংরক্ষিত';
+    setTimeout(()=>document.getElementById('mSr').textContent='',2000);
   } catch { toast('❌','সেভ ব্যর্থ।',true); }
-}
-document.getElementById('mSaveBtn')?.addEventListener('click', saveNote);
-
-/* ── CHARTS ── */
-function renderCharts() {
-  const canvas = document.getElementById('chartArea');
-  if (!canvas) return;
-  const counts = {new:0,'in-progress':0,done:0,cancelled:0};
-  orders.forEach(o => { if(counts[o.status]!==undefined) counts[o.status]++; });
-  const vals = Object.values(counts);
-  const total = vals.reduce((a,b)=>a+b,0)||1;
-  const colors = ['#f97316','#3b82f6','#22c55e','#ef4444'];
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  let startAngle = -Math.PI/2;
-  const cx=canvas.width/2, cy=canvas.height/2, r=Math.min(cx,cy)-20;
-  vals.forEach((v,i)=>{
-    const slice=(v/total)*2*Math.PI;
-    ctx.beginPath(); ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,startAngle,startAngle+slice);
-    ctx.closePath(); ctx.fillStyle=colors[i]; ctx.fill();
-    startAngle+=slice;
-  });
-}
+});
 
 /* ── NAVIGATION ── */
-function goTab(tab, el) {
+window.goTab = function(tab, el) {
   document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
   if(el) el.classList.add('active');
-  if(tab==='analytics') renderCharts(); else renderTable();
-}
-function sideFilter(status, el) {
-  curFilter = status;
+  renderTable();
+};
+window.sideFilter = function(status, el) {
+  curFilter=status;
   document.querySelectorAll('.sbl').forEach(l=>l.classList.remove('active'));
   if(el) el.classList.add('active');
   const t={new:'নতুন অর্ডার','in-progress':'কাজ চলছে',done:'সম্পন্ন',cancelled:'বাতিল'};
-  document.getElementById('pgTitle').textContent = t[status]||'অর্ডার';
+  document.getElementById('pgTitle').textContent=t[status]||'অর্ডার';
   renderTable();
-}
-window.goTab       = goTab;
-window.sideFilter  = sideFilter;
-window.doSearch    = () => renderTable();
+};
+window.doSearch        = () => renderTable();
 window.setStatusFilter = () => renderTable();
-window.filterStatus = (v) => { curFilter=v; renderTable(); };
+window.filterStatus    = (v) => { curFilter=v; renderTable(); };
 
 /* ── HELPERS ── */
-function x(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function toast(ic, msg, err=false) {
+function x(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(ic,msg,err=false){
   const t=document.getElementById('tk');
   t.classList.toggle('err',err);
   document.getElementById('tkIc').textContent=ic;
@@ -543,6 +479,7 @@ function toast(ic, msg, err=false) {
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
+renderTable = window.renderTable;
 </script>
 </body>
 </html>

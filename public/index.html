@@ -1705,111 +1705,49 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
 }
 
 /* ═══ LOGIN SUCCESS ANIMATION ════════════════════════════ */
-#loginSuccessOverlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 9999;
-  background: linear-gradient(135deg, #0f0f1a 0%, #1a0f2e 50%, #0f1a0f 100%);
-  align-items: center; justify-content: center;
-  flex-direction: column; gap: 20px;
-}
-#loginSuccessOverlay.show { display: flex; animation: fadeInOverlay .4s ease; }
-@keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
-.lso-circle {
-  width: 90px; height: 90px; border-radius: 50%;
-  background: linear-gradient(135deg, #f97316, #ef4444);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 40px;
-  animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) .2s both;
-}
-@keyframes popIn {
-  from { transform: scale(0) rotate(-180deg); opacity: 0; }
-  to   { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-.lso-text { color: #fff; font-size: 22px; font-weight: 700; letter-spacing: .5px;
-  animation: slideUp .4s ease .4s both; }
-.lso-sub  { color: rgba(255,255,255,.55); font-size: 14px;
-  animation: slideUp .4s ease .5s both; }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.lso-dots { display: flex; gap: 8px; animation: slideUp .4s ease .6s both; }
-.lso-dot  { width: 8px; height: 8px; border-radius: 50%; background: var(--orange);
-  animation: bounce 1.2s ease-in-out infinite; }
-.lso-dot:nth-child(2) { animation-delay: .15s; background: #f59e0b; }
-.lso-dot:nth-child(3) { animation-delay: .30s; background: #22c55e; }
-@keyframes bounce { 0%,80%,100%{ transform: scale(1); } 40%{ transform: scale(1.5); } }
+#loginSuccessOverlay{display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f0f1a,#1a0f2e,#0f1a0f);align-items:center;justify-content:center;flex-direction:column;gap:20px}
+#loginSuccessOverlay.show{display:flex;animation:fadeInOv .4s ease}
+@keyframes fadeInOv{from{opacity:0}to{opacity:1}}
+.lso-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ef4444);display:flex;align-items:center;justify-content:center;font-size:40px;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) .2s both}
+@keyframes popIn{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.lso-text{color:#fff;font-size:22px;font-weight:700;animation:slideUp .4s ease .4s both}
+.lso-sub{color:rgba(255,255,255,.55);font-size:14px;animation:slideUp .4s ease .5s both}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.lso-dots{display:flex;gap:8px;animation:slideUp .4s ease .6s both}
+.lso-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:bounce 1.2s ease-in-out infinite}
+.lso-dot:nth-child(2){animation-delay:.15s;background:#f59e0b}
+.lso-dot:nth-child(3){animation-delay:.30s;background:#22c55e}
+@keyframes bounce{0%,80%,100%{transform:scale(1)}40%{transform:scale(1.5)}}
 
-/* ═══ MY ORDERS — DRIVE LINK INPUT ═══════════════════════ */
-.mo-drive-row {
-  display: flex; gap: 10px; align-items: center;
-  background: rgba(249,115,22,.06); border: 1px solid rgba(249,115,22,.18);
-  border-radius: 10px; padding: 10px 14px; margin-top: 10px; flex-wrap: wrap;
-}
-.mo-drive-row input {
-  flex: 1; min-width: 200px;
-  background: rgba(255,255,255,.04); border: 1px solid rgba(249,115,22,.22);
-  border-radius: 8px; padding: 8px 12px; color: var(--fg); font-size: 13px;
-  outline: none; transition: border-color .2s;
-}
-.mo-drive-row input:focus { border-color: var(--orange); }
-.mo-drive-row input::placeholder { color: var(--muted); }
-.mo-drive-btn {
-  background: linear-gradient(135deg,#f97316,#ef4444); color:#fff;
-  border: none; border-radius: 8px; padding: 8px 16px;
-  font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
-  transition: opacity .2s;
-}
-.mo-drive-btn:hover { opacity: .85; }
-.mo-drive-label { font-size: 12px; color: var(--muted); width: 100%; }
+/* ═══ DRIVE LINK INPUT ════════════════════════════════════ */
+.mo-drive-row{display:flex;gap:10px;align-items:flex-start;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-radius:10px;padding:12px 14px;margin-top:12px;flex-wrap:wrap}
+.mo-drive-row input{flex:1;min-width:200px;background:rgba(255,255,255,.05);border:1px solid rgba(249,115,22,.22);border-radius:8px;padding:8px 12px;color:var(--fg);font-size:13px;outline:none;transition:border-color .2s}
+.mo-drive-row input:focus{border-color:var(--orange)}
+.mo-drive-row input::placeholder{color:var(--muted)}
+.mo-drive-btn{background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.mo-drive-btn:hover{opacity:.85}
 
-/* ═══ ORDER CARD — expanded info ════════════════════════= */
-.mo-card { cursor: pointer; transition: all .2s; }
-.mo-card-note {
-  display: none; grid-column: 1/-1;
-  background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
-  border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #4ade80;
-  margin-top: 6px; white-space: pre-wrap;
-}
-.mo-card.expanded .mo-card-note { display: block; }
-.mo-status-timeline {
-  display: none; grid-column: 1/-1;
-  gap: 0; margin-top: 10px;
-}
-.mo-card.expanded .mo-status-timeline { display: flex; }
-.mo-tl-step {
-  flex: 1; text-align: center; font-size: 11px; color: var(--muted);
-  position: relative; padding-top: 28px;
-}
-.mo-tl-step::before {
-  content: ''; position: absolute; top: 10px; left: 50%;
-  transform: translateX(-50%);
-  width: 18px; height: 18px; border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.15); background: var(--bg1);
-  transition: all .3s;
-}
-.mo-tl-step::after {
-  content: ''; position: absolute; top: 18px; left: calc(50% + 9px);
-  width: calc(100% - 18px); height: 2px;
-  background: rgba(255,255,255,.1);
-}
-.mo-tl-step:last-child::after { display: none; }
-.mo-tl-step.done::before { background: #22c55e; border-color: #22c55e; }
-.mo-tl-step.active::before { background: var(--orange); border-color: var(--orange);
-  box-shadow: 0 0 0 4px rgba(249,115,22,.2); }
+/* ═══ ORDER CARD EXPANDED ════════════════════════════════= */
+.mo-card{cursor:pointer}
+.mo-card-note{display:none;grid-column:1/-1;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px 14px;font-size:13px;color:#4ade80;margin-top:6px;white-space:pre-wrap}
+.mo-card.expanded .mo-card-note{display:block}
+.mo-status-timeline{display:none;grid-column:1/-1;margin-top:12px}
+.mo-card.expanded .mo-status-timeline{display:flex}
+.mo-tl-step{flex:1;text-align:center;font-size:11px;color:var(--muted);position:relative;padding-top:28px}
+.mo-tl-step::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);background:var(--bg1);transition:all .3s}
+.mo-tl-step::after{content:'';position:absolute;top:18px;left:calc(50% + 9px);width:calc(100% - 18px);height:2px;background:rgba(255,255,255,.1)}
+.mo-tl-step:last-child::after{display:none}
+.mo-tl-step.done::before{background:#22c55e;border-color:#22c55e}
+.mo-tl-step.active::before{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 4px rgba(249,115,22,.2)}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
-     LOGIN SUCCESS OVERLAY
-══════════════════════════════════════ -->
 <div id="loginSuccessOverlay">
   <div class="lso-circle">🎉</div>
-  <div class="lso-text" id="lsoName">Welcome back!</div>
+  <div class="lso-text" id="lsoName">স্বাগতম!</div>
   <div class="lso-sub">তোমার dashboard-এ নিয়ে যাচ্ছি…</div>
-  <div class="lso-dots">
-    <div class="lso-dot"></div>
-    <div class="lso-dot"></div>
-    <div class="lso-dot"></div>
-  </div>
+  <div class="lso-dots"><div class="lso-dot"></div><div class="lso-dot"></div><div class="lso-dot"></div></div>
 </div>
 
 
@@ -2390,19 +2328,19 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
       </div>
     </div>
 
-    <!-- Drive link submit -->
+    <!-- Drive link row -->
     <div class="mo-drive-row" id="moDriveRow" style="display:none;">
-      <span style="font-size:18px;">🔗</span>
+      <span style="font-size:20px;margin-top:4px;">🔗</span>
       <div style="flex:1;">
-        <div class="mo-drive-label">তোমার order-এর Google Drive link দাও (admin দেখতে পাবে)</div>
-        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-          <select id="moDriveOrderSel" style="background:rgba(255,255,255,.06);border:1px solid rgba(249,115,22,.22);border-radius:8px;padding:8px 12px;color:var(--fg);font-size:13px;outline:none;max-width:220px;">
-            <option value="">— Order সিলেক্ট করো —</option>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">তোমার কাজের Google Drive link পাঠাও — Admin দেখতে পাবে</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <select id="moDriveOrderSel" style="background:rgba(255,255,255,.06);border:1px solid rgba(249,115,22,.22);border-radius:8px;padding:8px 12px;color:var(--fg);font-size:13px;outline:none;">
+            <option value="">— Order বেছে নাও —</option>
           </select>
-          <input id="moDriveInput" type="url" placeholder="https://drive.google.com/..." class="" />
+          <input id="moDriveInput" type="url" placeholder="https://drive.google.com/..." />
           <button class="mo-drive-btn" onclick="submitDriveLink()">📤 পাঠাও</button>
         </div>
-        <div id="moDriveMsg" style="font-size:12px;margin-top:6px;color:#4ade80;display:none;"></div>
+        <div id="moDriveMsg" style="font-size:12px;margin-top:6px;display:none;"></div>
       </div>
     </div>
 
@@ -2481,7 +2419,59 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
 ══════════════════════════════════════ -->
 <!-- inline card video player — no overlay needed -->
 
-<script>
+<script type="module">
+/* ═══ Firebase Imports ══════════════════════════════════ */
+import { initializeApp }                             from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAnalytics }                              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+import {
+  getAuth, onAuthStateChanged, signOut,
+  signInWithPopup, OAuthProvider,
+  GoogleAuthProvider, FacebookAuthProvider,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  updateProfile,
+  RecaptchaVerifier, signInWithPhoneNumber
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import {
+  getFirestore, doc, setDoc, getDoc,
+  collection, query, where, orderBy, getDocs,
+  addDoc, updateDoc, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+
+/* ═══════════════════════════════════════
+   FIRESTORE HELPERS (called from HTML)
+═══════════════════════════════════════ */
+async function _addOrder(data) {
+  data.status    = 'new';
+  data.createdAt = new Date().toISOString();
+  await addDoc(collection(db, 'orders'), data);
+}
+
+async function _updateOrderDrive(orderId, driveLink) {
+  await updateDoc(doc(db, 'orders', orderId), { driveLink });
+}
+
+/* ═══════════════════════════════════════
+   DRIVE LINK SUBMIT (user panel)
+═══════════════════════════════════════ */
+window.submitDriveLink = async function() {
+  const orderId = document.getElementById('moDriveOrderSel').value;
+  const link    = document.getElementById('moDriveInput').value.trim();
+  const msgEl   = document.getElementById('moDriveMsg');
+  if (!orderId) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ একটা order সিলেক্ট করো।'; msgEl.style.display='block'; return; }
+  if (!link || !link.startsWith('http')) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ সঠিক Drive link দাও।'; msgEl.style.display='block'; return; }
+  try {
+    await _updateOrderDrive(orderId, link);
+    msgEl.style.color='#4ade80';
+    msgEl.textContent='✅ পাঠানো হয়েছে! Admin দেখতে পাবে।';
+    msgEl.style.display='block';
+    document.getElementById('moDriveInput').value='';
+    if (window._fbCurrentUser) await loadMyOrders(window._fbCurrentUser);
+    setTimeout(() => msgEl.style.display='none', 4000);
+  } catch { msgEl.style.color='#f87171'; msgEl.textContent='❌ পাঠানো হয়নি।'; msgEl.style.display='block'; }
+};
+
+/* ═══ Regular page functions ════════════════════════════ */
 /* ── 1. CUSTOM CURSOR ─────────────────── */
 var dot  = document.getElementById('c-dot');
 var ring = document.getElementById('c-ring');
@@ -2923,8 +2913,8 @@ async function submitOrder(e) {
   }
 
   try {
-    if (!window._addOrder) throw new Error('Firebase load হয়নি, একটু পরে আবার চেষ্টা করুন।');
-    await window._addOrder(formData);
+    // ✅ Firestore-এ save
+    await _addOrder(formData);
     var res = { ok: true };
     if (res.ok) {
       btn.textContent = '✅ Order Submitted!';
@@ -2947,28 +2937,7 @@ async function submitOrder(e) {
     setTimeout(function() { btn.textContent = 'Submit Order & Get Your Quote →'; btn.style.background = ''; }, 3500);
   }
 }
-</script>
-
-<!-- ══════════════════════════════════════
-     FIREBASE AUTH
-══════════════════════════════════════ -->
-<script type="module">
-import { initializeApp }                             from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAnalytics }                              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
-import {
-  getAuth, onAuthStateChanged, signOut,
-  signInWithPopup, OAuthProvider,
-  GoogleAuthProvider, FacebookAuthProvider,
-  createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  updateProfile,
-  RecaptchaVerifier, signInWithPhoneNumber
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import {
-  getFirestore, doc, setDoc, getDoc,
-  collection, query, where, orderBy, getDocs,
-  addDoc, updateDoc, serverTimestamp
-} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
+/* ═══ Firebase Auth & Firestore functions ══════════════= */
 /* ── Config ── */
 const firebaseConfig = {
   apiKey:            "AIzaSyA_fv9NrThoWjKLCE780Ua7FWFIgdZ5IkM",
@@ -2985,17 +2954,6 @@ const app      = initializeApp(firebaseConfig);
 const analytics= getAnalytics(app);
 const auth     = getAuth(app);
 const db       = getFirestore(app);
-
-/* ── Window-exposed helpers (regular scripts can call these) ── */
-window._addOrder = async (data) => {
-  data.status    = 'new';
-  data.createdAt = new Date().toISOString();
-  const ref = await addDoc(collection(db, 'orders'), data);
-  return ref.id;
-};
-window._updateOrderDrive = async (orderId, driveLink) => {
-  await updateDoc(doc(db, 'orders', orderId), { driveLink });
-};
 
 /* ── Providers ── */
 const googleProv    = new GoogleAuthProvider();
@@ -3050,8 +3008,7 @@ async function loadMyOrders(user) {
     );
     const snap   = await getDocs(q);
     const myOrds = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-    // Drive link dropdown populate করো
+    // Drive dropdown
     const sel = document.getElementById('moDriveOrderSel');
     if (sel && myOrds.length) {
       sel.innerHTML = '<option value="">— Order সিলেক্ট করো —</option>' +
@@ -3078,16 +3035,14 @@ async function loadMyOrders(user) {
       const sc    = statusClass[o.status] || 'mo-b-new';
       const sl    = statusLabel[o.status] || '🆕 New';
       const dt    = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-      // Timeline steps
       const steps = ['new','in-progress','done'];
       const si    = steps.indexOf(o.status);
-      const tlHtml = o.status !== 'cancelled' ? `
-        <div class="mo-status-timeline">
-          ${steps.map((s,i) => `<div class="mo-tl-step ${i < si ? 'done' : i === si ? 'active' : ''}">${
-            {new:'📬 Received','in-progress':'⚙️ Editing',done:'✅ Delivered'}[s]
-          }</div>`).join('')}
-        </div>` : '';
-      const noteHtml = o.note ? `<div class="mo-card-note">💬 Admin note: ${o.note}</div>` : '';
+      const tlHtml = o.status !== 'cancelled' ? `<div class="mo-status-timeline">${
+        steps.map((s,i) => `<div class="mo-tl-step ${i<si?'done':i===si?'active':''}">${
+          {new:'📬 Received','in-progress':'⚙️ Editing',done:'✅ Delivered'}[s]
+        }</div>`).join('')
+      }</div>` : '';
+      const noteHtml = o.note ? `<div class="mo-card-note">💬 Admin: ${o.note}</div>` : '';
       return `<div class="mo-card" onclick="this.classList.toggle('expanded')">
         <div class="mo-card-icon">${icon}</div>
         <div class="mo-card-info">
@@ -3095,15 +3050,14 @@ async function loadMyOrders(user) {
           <div class="mo-card-meta">
             <span>⚡ ${o.speed || 'Standard'}</span>
             <span>🎬 ${o.length || '—'}</span>
-            ${o.driveLink ? `<a href="${o.driveLink}" target="_blank" style="color:#60a5fa;" onclick="event.stopPropagation()">🔗 তোমার Drive</a>` : ''}
+            ${o.driveLink ? `<a href="${o.driveLink}" target="_blank" style="color:#60a5fa;" onclick="event.stopPropagation()">🔗 Drive</a>` : ''}
           </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
           <span class="mo-badge ${sc}">${sl}</span>
           <span class="mo-card-date">${dt}</span>
         </div>
-        ${tlHtml}
-        ${noteHtml}
+        ${tlHtml}${noteHtml}
       </div>`;
     }).join('');
 
@@ -3163,20 +3117,18 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     await saveUserData(user);
-
-    // ✅ Login success animation — তারপর My Orders-এ scroll
-    const overlay = document.getElementById('loginSuccessOverlay');
-    const lsoName = document.getElementById('lsoName');
-    const firstName = (user.displayName || user.email?.split('@')[0] || 'User').split(' ')[0];
-    lsoName.textContent = `স্বাগতম, ${firstName}! 🎉`;
-    overlay.classList.add('show');
-    closeAuth();
-
-    setTimeout(() => {
-      overlay.classList.remove('show');
-      document.getElementById('myOrders').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 2200);
-
+    // ✅ Login success animation
+    const ov = document.getElementById('loginSuccessOverlay');
+    if (ov) {
+      const firstName = (user.displayName || user.email?.split('@')[0] || 'User').split(' ')[0];
+      document.getElementById('lsoName').textContent = `স্বাগতম, ${firstName}! 🎉`;
+      ov.classList.add('show');
+      closeAuth();
+      setTimeout(() => {
+        ov.classList.remove('show');
+        document.getElementById('myOrders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 2200);
+    } else { closeAuth(); }
     await loadMyOrders(user);
   } else {
     /* ── Logged out ── */
@@ -3339,28 +3291,6 @@ function fe(code) {
   };
   return m[code] || 'কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।';
 }
-/* ══════════════════════════════════════
-   SUBMIT DRIVE LINK (from user panel)
-══════════════════════════════════════ */
-window.submitDriveLink = async function() {
-  const orderId  = document.getElementById('moDriveOrderSel').value;
-  const link     = document.getElementById('moDriveInput').value.trim();
-  const msgEl    = document.getElementById('moDriveMsg');
-  if (!orderId) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ একটা order সিলেক্ট করো।'; msgEl.style.display='block'; return; }
-  if (!link || !link.startsWith('http')) { msgEl.style.color='#f87171'; msgEl.textContent='⚠ সঠিক Drive link দাও।'; msgEl.style.display='block'; return; }
-  try {
-    await window._updateOrderDrive(orderId, link);
-    msgEl.style.color = '#4ade80';
-    msgEl.textContent = '✅ Drive link সফলভাবে পাঠানো হয়েছে! Admin দেখতে পাবে।';
-    msgEl.style.display = 'block';
-    document.getElementById('moDriveInput').value = '';
-    if (window._fbCurrentUser) await loadMyOrders(window._fbCurrentUser);
-    setTimeout(() => msgEl.style.display = 'none', 4000);
-  } catch(e) {
-    msgEl.style.color='#f87171'; msgEl.textContent='❌ পাঠানো হয়নি। আবার চেষ্টা করো।'; msgEl.style.display='block';
-  }
-};
-
 </script>
 
 
