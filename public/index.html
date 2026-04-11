@@ -1799,7 +1799,9 @@ body.light-mode .apb { background: #f5f4fc; border-color: rgba(249,115,22,.15); 
 /* ═══ LOGIN SUCCESS ANIMATION ════════════════════════════ */
 #loginSuccessOverlay{display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f0f1a,#1a0f2e,#0f1a0f);align-items:center;justify-content:center;flex-direction:column;gap:20px}
 #loginSuccessOverlay.show{display:flex;animation:fadeInOv .4s ease}
+#loginSuccessOverlay.hide{animation:fadeOutOv .6s ease forwards}
 @keyframes fadeInOv{from{opacity:0}to{opacity:1}}
+@keyframes fadeOutOv{0%{opacity:1;transform:scale(1)}60%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(0.95)}}
 .lso-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ef4444);display:flex;align-items:center;justify-content:center;font-size:40px;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) .2s both}
 @keyframes popIn{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
 .lso-text{color:#fff;font-size:22px;font-weight:700;animation:slideUp .4s ease .4s both}
@@ -1840,7 +1842,7 @@ body.light-mode .apb { background: #f5f4fc; border-color: rgba(249,115,22,.15); 
 <div id="loginSuccessOverlay">
   <div class="lso-circle">🎉</div>
   <div class="lso-text" id="lsoName">স্বাগতম!</div>
-  <div class="lso-sub">তোমার dashboard-এ নিয়ে যাচ্ছি…</div>
+  <div class="lso-sub">হোম পেজে নিয়ে যাচ্ছি…</div>
   <div class="lso-dots"><div class="lso-dot"></div><div class="lso-dot"></div><div class="lso-dot"></div></div>
 </div>
 
@@ -3251,12 +3253,16 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById('lsoName').textContent = `স্বাগতম, ${firstName}! 🎉`;
       ov.classList.add('show');
       setTimeout(() => {
-        ov.classList.remove('show');
-        document.getElementById('myOrders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 2200);
+        ov.classList.add('hide');
+        setTimeout(() => {
+          ov.classList.remove('show');
+          ov.classList.remove('hide');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 600);
+      }, 2000);
     } else if (!isFirstLoad) {
-      // Still scroll on login, just no animation
-      document.getElementById('myOrders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Still scroll to top on login, just no animation
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     await loadMyOrders(user);
   } else {
