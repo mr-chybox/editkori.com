@@ -1582,97 +1582,144 @@ footer {
 /* light mode provider grid */
 body.light-mode .apb { background: #f5f4fc; border-color: rgba(249,115,22,.15); color: #0f0f1a; }
 
-/* ══════════════════════════════════════
-   MY ORDERS SECTION
-══════════════════════════════════════ */
+
+/* ═══ USER DASHBOARD ═══════════════════════════════════════ */
 #myOrders {
-  display: none;
-  position: relative; z-index: 2;
-  padding: 80px 60px;
-  background: var(--bg1);
-  border-top: 1px solid rgba(249,115,22,.08);
+  display: none; padding: 80px 60px;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg1) 100%);
+  border-top: 1px solid rgba(249,115,22,.06);
 }
 #myOrders.visible { display: block; }
 
-.mo-header {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 16px; margin-bottom: 36px;
+/* Profile bar */
+.ud-profile-bar {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.14);
+  border-radius: 20px; padding: 20px 24px; margin-bottom: 20px;
 }
-.mo-welcome {
-  display: flex; align-items: center; gap: 16px;
+.ud-avatar-wrap { position: relative; flex-shrink: 0; }
+.ud-online-dot {
+  position: absolute; bottom: 2px; right: 2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #22c55e; border: 2px solid var(--bg2);
 }
-.mo-avatar-lg {
-  width: 56px; height: 56px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--orange), var(--amber));
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #000;
-  border: 3px solid rgba(249,115,22,.3); overflow: hidden; flex-shrink: 0;
+.ud-profile-info { flex: 1; min-width: 0; }
+.ud-profile-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+.ud-profile-email { font-size: 12px; color: var(--muted); word-break: break-all; }
+.ud-profile-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.ud-action-btn {
+  padding: 8px 18px; border-radius: 100px; font-size: 13px; font-weight: 600;
+  border: 1px solid rgba(249,115,22,.3); background: rgba(249,115,22,.08);
+  color: var(--orange); cursor: pointer; transition: all .2s; white-space: nowrap;
 }
-.mo-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
-.mo-greet  { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
-.mo-uname  { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .04em; }
+.ud-action-btn:hover { background: rgba(249,115,22,.18); }
+.ud-action-btn.danger { border-color: rgba(239,68,68,.3); background: rgba(239,68,68,.07); color: #f87171; }
+.ud-action-btn.danger:hover { background: rgba(239,68,68,.15); }
 
-.mo-stats  { display: flex; gap: 20px; flex-wrap: wrap; }
-.mo-stat   {
-  background: var(--bg2); border: 1px solid rgba(249,115,22,.08);
-  border-radius: 14px; padding: 14px 20px; text-align: center; min-width: 90px;
+/* Stats row */
+.ud-stats-row {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px;
 }
-.mo-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 30px; line-height: 1; }
-.mo-stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-top: 3px; }
-.mo-stat-val.c-or { color: var(--orange); }
-.mo-stat-val.c-gn { color: #4ade80; }
-.mo-stat-val.c-yw { color: #fbbf24; }
+.ud-stat-card {
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.1);
+  border-radius: 16px; padding: 18px 20px; text-align: center;
+}
+.ud-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; }
+.ud-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+
+/* Orders label */
+.ud-orders-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--muted); margin: 24px 0 12px;
+}
 
 /* Order cards */
-.mo-list   { display: flex; flex-direction: column; gap: 14px; }
-.mo-card   {
-  background: var(--bg2); border: 1px solid rgba(249,115,22,.08);
-  border-radius: 18px; padding: 22px 24px;
-  display: grid; grid-template-columns: auto 1fr auto;
-  gap: 16px; align-items: start;
-  transition: border-color .3s, transform .3s;
+.mo-list { display: flex; flex-direction: column; gap: 12px; }
+.mo-card {
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.1);
+  border-radius: 16px; padding: 18px 20px; cursor: pointer;
+  transition: border-color .25s, transform .2s;
 }
-.mo-card > .mo-card-icon,
-.mo-card > .mo-card-info > .mo-card-title { align-self: center; }
-.mo-card:hover { border-color: rgba(249,115,22,.22); transform: translateX(4px); }
-.mo-card-icon  {
-  width: 48px; height: 48px; border-radius: 13px;
-  background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.15);
-  display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+.mo-card:hover { border-color: rgba(249,115,22,.3); transform: translateX(3px); }
+.mo-card-top {
+  display: flex; align-items: center; gap: 14px;
 }
-.mo-card-info  { min-width: 0; }
+.mo-card-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.18);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.mo-card-info { flex: 1; min-width: 0; }
 .mo-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-.mo-card-meta  { font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
-.mo-card-date  { font-size: 11px; color: var(--muted); }
-.mo-badge      {
-  padding: 5px 13px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap;
-}
-.mo-b-new       { background: rgba(59,130,246,.14); color: #60a5fa; border: 1px solid rgba(59,130,246,.22); }
-.mo-b-progress  { background: rgba(234,179,8,.14);  color: #fbbf24; border: 1px solid rgba(234,179,8,.22); }
-.mo-b-done      { background: rgba(34,197,94,.14);  color: #4ade80; border: 1px solid rgba(34,197,94,.22); }
-.mo-b-cancelled { background: rgba(239,68,68,.14);  color: #f87171; border: 1px solid rgba(239,68,68,.22); }
+.mo-card-meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+.mo-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+.mo-card-date { font-size: 11px; color: var(--muted); }
+.mo-badge { padding: 5px 13px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.mo-b-new       { background:rgba(59,130,246,.14); color:#60a5fa; border:1px solid rgba(59,130,246,.22); }
+.mo-b-progress  { background:rgba(234,179,8,.14);  color:#fbbf24; border:1px solid rgba(234,179,8,.22); }
+.mo-b-done      { background:rgba(34,197,94,.14);  color:#4ade80; border:1px solid rgba(34,197,94,.22); }
+.mo-b-cancelled { background:rgba(239,68,68,.14);  color:#f87171; border:1px solid rgba(239,68,68,.22); }
+.mo-expand-hint { font-size: 11px; color: var(--muted); margin-left: auto; }
 
-.mo-empty   { text-align: center; padding: 40px; color: var(--muted); }
-.mo-empty-ic{ font-size: 40px; margin-bottom: 12px; opacity: .4; }
+/* Card expand area */
+.mo-card-body {
+  display: none; margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid rgba(249,115,22,.08);
+}
+.mo-card.expanded .mo-card-body { display: block; }
+
+/* Status timeline inside card */
+.mo-timeline {
+  display: flex; align-items: center; gap: 0; margin-bottom: 14px;
+}
+.mo-tl-step {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  font-size: 11px; color: var(--muted); position: relative;
+}
+.mo-tl-dot {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,.15);
+  background: var(--bg1); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; margin-bottom: 5px; z-index: 1; transition: all .3s;
+}
+.mo-tl-step.done .mo-tl-dot { background: #22c55e; border-color: #22c55e; color: #fff; }
+.mo-tl-step.active .mo-tl-dot {
+  background: var(--orange); border-color: var(--orange); color: #fff;
+  box-shadow: 0 0 0 4px rgba(249,115,22,.2);
+}
+.mo-tl-line {
+  position: absolute; top: 10px; left: calc(50% + 11px);
+  width: calc(100% - 22px); height: 2px;
+  background: rgba(255,255,255,.1); z-index: 0;
+}
+.mo-tl-step.done .mo-tl-line { background: #22c55e; }
+.mo-tl-step:last-child .mo-tl-line { display: none; }
+.mo-tl-label { font-size: 10px; text-align: center; line-height: 1.3; }
+
+/* Admin note */
+.mo-admin-note {
+  background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+  border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #4ade80;
+  margin-top: 10px; line-height: 1.6;
+}
+
+/* Signed out prompt */
 .mo-signin-prompt {
-  text-align: center; padding: 50px 20px;
+  text-align: center; padding: 60px 20px;
   background: var(--bg2); border: 1px solid rgba(249,115,22,.1);
   border-radius: 20px;
 }
-.mo-signin-prompt h3 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; margin-bottom: 8px; }
-.mo-signin-prompt p  { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
 
-/* light mode my orders */
-body.light-mode #myOrders          { background: #fff; }
-body.light-mode .mo-stat,
-body.light-mode .mo-card           { background: #f5f4fc; }
-body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
+.mo-empty { text-align: center; padding: 40px; color: var(--muted); }
 
+/* Mobile */
 @media (max-width: 768px) {
   #myOrders { padding: 60px 20px; }
-  .mo-card  { grid-template-columns: auto 1fr; }
-  .mo-card-date { grid-column: 1/-1; }
-  .auth-provider-grid { grid-template-columns: 1fr 1fr; }
+  .ud-stats-row { grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .ud-stat-card { padding: 14px 12px; }
+  .ud-stat-num { font-size: 28px; }
+  .ud-profile-bar { padding: 16px; }
+  .ud-profile-actions { width: 100%; }
+  .ud-action-btn { flex: 1; text-align: center; }
 }
 
 /* ── existing media query continues ── */
@@ -1704,6 +1751,49 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
   footer { padding: 48px 20px 22px; }
   .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
+}
+
+
+/* ── Mobile: hide custom cursor completely ── */
+@media (max-width: 768px), (pointer: coarse) {
+  #c-dot, #c-ring { display: none !important; }
+  * { cursor: auto !important; }
+  button, a, [onclick], select, input, textarea, label { cursor: pointer !important; }
+}
+
+
+/* ═══ ORDER CONFIRMATION OVERLAY ════════════════════════ */
+#orderConfirm {
+  display: none; position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+#orderConfirm.show { display: flex; animation: fadeInOv .4s ease; }
+.oc-box {
+  background: var(--bg2); border: 1px solid rgba(249,115,22,.25);
+  border-radius: 24px; padding: 40px 32px; max-width: 460px; width: 100%;
+  text-align: center; animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) .1s both;
+}
+.oc-icon { font-size: 56px; margin-bottom: 16px; }
+.oc-title { font-family:'Bebas Neue',sans-serif; font-size: 32px; letter-spacing:.06em; margin-bottom: 8px; color: var(--txt); }
+.oc-id {
+  display: inline-block; background: rgba(249,115,22,.12);
+  border: 1px solid rgba(249,115,22,.3); border-radius: 100px;
+  padding: 8px 20px; font-family: monospace; font-size: 18px;
+  font-weight: 700; color: var(--orange); letter-spacing: .1em; margin: 12px 0 20px;
+}
+.oc-msg { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+.oc-msg strong { color: var(--txt); }
+.oc-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.oc-btn-primary {
+  background: linear-gradient(135deg,#f97316,#ef4444);
+  color: #fff; border: none; border-radius: 100px;
+  padding: 12px 28px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.oc-btn-secondary {
+  background: transparent; border: 1px solid rgba(249,115,22,.3);
+  color: var(--orange); border-radius: 100px;
+  padding: 12px 28px; font-size: 14px; font-weight: 600; cursor: pointer;
 }
 
 /* ═══ LOGIN SUCCESS ANIMATION ════════════════════════════ */
@@ -2301,34 +2391,51 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MY ORDERS SECTION (visible after login)
-══════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════
+     MY ORDERS / USER DASHBOARD
+═══════════════════════════════════════ -->
 <section id="myOrders">
-  <div class="section-chip" style="margin-bottom:12px;">My Account</div>
 
-  <!-- Logged OUT state -->
+  <!-- ── Logged OUT ── -->
   <div id="moLoggedOut" class="mo-signin-prompt">
-    <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-    <h3>Sign In to View Your Orders</h3>
-    <p>Track your projects, check delivery status and get updates in real-time.</p>
+    <div style="font-size:52px;margin-bottom:16px;">🔐</div>
+    <h3 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.06em;margin-bottom:8px;">Sign In to Track Orders</h3>
+    <p style="color:var(--muted);font-size:14px;max-width:340px;margin:0 auto 24px;">তোমার project-এর status, delivery update এবং admin-এর note real-time-এ দেখো।</p>
     <button class="btn-primary" onclick="openAuth()" style="margin:0 auto;">Sign In / Register →</button>
   </div>
 
-  <!-- Logged IN state -->
+  <!-- ── Logged IN ── -->
   <div id="moLoggedIn" style="display:none;">
-    <div class="mo-header">
-      <div class="mo-welcome">
+
+    <!-- Profile bar -->
+    <div class="ud-profile-bar">
+      <div class="ud-avatar-wrap">
         <div class="mo-avatar-lg" id="moAvatarLg">U</div>
-        <div>
-          <div class="mo-greet">Welcome back 👋</div>
-          <div class="mo-uname" id="moUname">User</div>
-        </div>
+        <div class="ud-online-dot"></div>
       </div>
-      <div class="mo-stats">
-        <div class="mo-stat"><div class="mo-stat-val c-or" id="moTotal">0</div><div class="mo-stat-lbl">Total</div></div>
-        <div class="mo-stat"><div class="mo-stat-val c-yw" id="moActive">0</div><div class="mo-stat-lbl">Active</div></div>
-        <div class="mo-stat"><div class="mo-stat-val c-gn" id="moDone">0</div><div class="mo-stat-lbl">Done</div></div>
+      <div class="ud-profile-info">
+        <div class="ud-profile-name" id="moUname">User</div>
+        <div class="ud-profile-email" id="moEmail">—</div>
+      </div>
+      <div class="ud-profile-actions">
+        <button class="ud-action-btn" onclick="document.getElementById('orderSection').scrollIntoView({behavior:'smooth'})">➕ New Order</button>
+        <button class="ud-action-btn danger" onclick="signOutUser()">🚪 Sign Out</button>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="ud-stats-row">
+      <div class="ud-stat-card">
+        <div class="ud-stat-num" id="moTotal" style="color:var(--orange)">0</div>
+        <div class="ud-stat-label">Total Orders</div>
+      </div>
+      <div class="ud-stat-card">
+        <div class="ud-stat-num" id="moActive" style="color:#fbbf24">0</div>
+        <div class="ud-stat-label">In Progress</div>
+      </div>
+      <div class="ud-stat-card">
+        <div class="ud-stat-num" id="moDone" style="color:#4ade80">0</div>
+        <div class="ud-stat-label">Delivered</div>
       </div>
     </div>
 
@@ -2336,24 +2443,26 @@ body.light-mode .mo-signin-prompt  { background: #f5f4fc; }
     <div class="mo-drive-row" id="moDriveRow" style="display:none;">
       <span style="font-size:20px;margin-top:4px;">🔗</span>
       <div style="flex:1;">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">তোমার কাজের Google Drive link পাঠাও — Admin দেখতে পাবে</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;">তোমার কাজের Google Drive Link পাঠাও</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <select id="moDriveOrderSel" style="background:rgba(255,255,255,.06);border:1px solid rgba(249,115,22,.22);border-radius:8px;padding:8px 12px;color:var(--fg);font-size:13px;outline:none;">
+          <select id="moDriveOrderSel" style="background:rgba(255,255,255,.06);border:1px solid rgba(249,115,22,.22);border-radius:8px;padding:8px 12px;color:var(--fg);font-size:13px;outline:none;flex:1;min-width:160px;">
             <option value="">— Order বেছে নাও —</option>
           </select>
-          <input id="moDriveInput" type="url" placeholder="https://drive.google.com/..." />
+          <input id="moDriveInput" type="url" placeholder="https://drive.google.com/..." style="flex:2;min-width:200px;" />
           <button class="mo-drive-btn" onclick="submitDriveLink()">📤 পাঠাও</button>
         </div>
         <div id="moDriveMsg" style="font-size:12px;margin-top:6px;display:none;"></div>
       </div>
     </div>
 
+    <!-- Orders list -->
+    <div class="ud-orders-label">তোমার Orders</div>
     <div class="mo-list" id="moList">
-      <div style="text-align:center;padding:30px;color:var(--muted);">
-        <div style="font-size:32px;margin-bottom:8px;opacity:.4;">⏳</div>
-        Loading your orders…
+      <div style="text-align:center;padding:40px;color:var(--muted);">
+        <div style="font-size:32px;margin-bottom:8px;opacity:.4;">⏳</div>Loading…
       </div>
     </div>
+
   </div>
 </section>
 
@@ -2892,14 +3001,16 @@ async function submitOrder(e) {
       btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
       btn.style.opacity = '1';
       btn.disabled = false;
-      var toast = document.getElementById('toast');
-      toast.classList.add('show');
-      setTimeout(function() { toast.classList.remove('show'); }, 5000);
+      // Show order confirmation overlay with ID
+      var orderId = 'EK-' + Date.now().toString().slice(-6);
+      document.getElementById('ocOrderId').textContent = '#' + orderId;
+      document.getElementById('orderConfirm').classList.add('show');
+      // Reset form
       setTimeout(function() {
         btn.textContent = 'Submit Order & Get Your Quote →';
         btn.style.background = '';
         e.target.reset();
-      }, 4000);
+      }, 500);
     } else { throw new Error(); }
   } catch {
     btn.textContent = '❌ Failed — Try Again';
@@ -3027,34 +3138,46 @@ async function loadMyOrders(user) {
       return;
     }
 
+    const statusIcon = {new:'📬','in-progress':'⚙️',done:'✅',cancelled:'❌'};
     list.innerHTML = myOrds.map(o => {
-      const icon  = catIcons[o.category] || '🎬';
-      const sc    = statusClass[o.status] || 'mo-b-new';
-      const sl    = statusLabel[o.status] || '🆕 New';
-      const dt    = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+      const icon = catIcons[o.category] || '🎬';
+      const sc   = statusClass[o.status] || 'mo-b-new';
+      const sl   = statusLabel[o.status] || '🆕 New';
+      const dt   = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
       const steps = ['new','in-progress','done'];
       const si    = steps.indexOf(o.status);
-      const tlHtml = o.status !== 'cancelled' ? `<div class="mo-status-timeline">${
-        steps.map((s,i) => `<div class="mo-tl-step ${i<si?'done':i===si?'active':''}">${
-          {new:'📬 Received','in-progress':'⚙️ Editing',done:'✅ Delivered'}[s]
-        }</div>`).join('')
-      }</div>` : '';
-      const noteHtml = o.note ? `<div class="mo-card-note">💬 Admin: ${o.note}</div>` : '';
+      const tlHtml = o.status !== 'cancelled' ? `
+        <div class="mo-timeline">
+          ${steps.map((s,i) => `
+            <div class="mo-tl-step ${i<si?'done':i===si?'active':''}">
+              <div class="mo-tl-dot">${i<=si?'✓':''}</div>
+              ${i<steps.length-1?'<div class="mo-tl-line"></div>':''}
+              <div class="mo-tl-label">${{new:'Order\nReceived','in-progress':'Editing\nIn Progress',done:'Video\nDelivered'}[s]}</div>
+            </div>`).join('')}
+        </div>` : '';
+      const noteHtml = o.note ? `<div class="mo-admin-note">💬 <strong>Admin Note:</strong> ${o.note}</div>` : '';
+      const driveHtml = o.driveLink ? `<a href="${o.driveLink}" target="_blank" style="color:#60a5fa;font-size:12px;" onclick="event.stopPropagation()">🔗 তোমার Drive link</a>` : '';
       return `<div class="mo-card" onclick="this.classList.toggle('expanded')">
-        <div class="mo-card-icon">${icon}</div>
-        <div class="mo-card-info">
-          <div class="mo-card-title">${o.category || 'Video Project'}</div>
-          <div class="mo-card-meta">
-            <span>⚡ ${o.speed || 'Standard'}</span>
-            <span>🎬 ${o.length || '—'}</span>
-            ${o.driveLink ? `<a href="${o.driveLink}" target="_blank" style="color:#60a5fa;" onclick="event.stopPropagation()">🔗 Drive</a>` : ''}
+        <div class="mo-card-top">
+          <div class="mo-card-icon">${icon}</div>
+          <div class="mo-card-info">
+            <div class="mo-card-title">${o.category || 'Video Project'}</div>
+            <div class="mo-card-meta">
+              <span>⚡ ${o.speed || 'Standard'}</span>
+              <span>🎬 ${o.length || '—'}</span>
+              ${driveHtml}
+            </div>
+          </div>
+          <div class="mo-card-right">
+            <span class="mo-badge ${sc}">${sl}</span>
+            <span class="mo-card-date">${dt}</span>
+            <span class="mo-expand-hint">👆 tap</span>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-          <span class="mo-badge ${sc}">${sl}</span>
-          <span class="mo-card-date">${dt}</span>
+        <div class="mo-card-body">
+          ${tlHtml}
+          ${noteHtml}
         </div>
-        ${tlHtml}${noteHtml}
       </div>`;
     }).join('');
 
@@ -3101,6 +3224,7 @@ onAuthStateChanged(auth, async (user) => {
       moAvatarLg.textContent = ini;
     }
     moUname.textContent = name;
+    document.getElementById('moEmail').textContent = email;
 
     /* ── My Orders section ── */
     moSection.classList.add('visible');
@@ -3117,19 +3241,22 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     await saveUserData(user);
-    // ✅ Login success animation — শুধু manual login-এ দেখাবে, page reload-এ নয়
+    // ✅ Login success animation
     const ov = document.getElementById('loginSuccessOverlay');
     const firstName = (user.displayName || user.email?.split('@')[0] || 'User').split(' ')[0];
+    // Always close the modal first
+    document.getElementById('authModal').classList.remove('open');
     if (ov && !isFirstLoad) {
+      // Only animate on manual login (not page reload)
       document.getElementById('lsoName').textContent = `স্বাগতম, ${firstName}! 🎉`;
       ov.classList.add('show');
-      closeAuth();
       setTimeout(() => {
         ov.classList.remove('show');
         document.getElementById('myOrders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 2200);
-    } else {
-      closeAuth();
+    } else if (!isFirstLoad) {
+      // Still scroll on login, just no animation
+      document.getElementById('myOrders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     await loadMyOrders(user);
   } else {
@@ -3307,9 +3434,38 @@ function fe(code) {
   };
   return m[code] || 'কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।';
 }
+
+/* ── Order confirmation ── */
+window.closeOrderConfirm = function(goToOrders) {
+  document.getElementById('orderConfirm').classList.remove('show');
+  if (goToOrders) {
+    if (window._fbCurrentUser) {
+      document.getElementById('myOrders').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else { window.openAuth(); }
+  }
+};
+
 </script>
 
 
+
+<!-- ORDER CONFIRMATION OVERLAY -->
+<div id="orderConfirm">
+  <div class="oc-box">
+    <div class="oc-icon">🎉</div>
+    <div class="oc-title">Order Confirmed!</div>
+    <div class="oc-id" id="ocOrderId">#EK-000000</div>
+    <div class="oc-msg">
+      <strong>ধন্যবাদ তোমার order-এর জন্য!</strong><br>
+      আমাদের টিম <strong>২ ঘণ্টার মধ্যে</strong> তোমার সাথে যোগাযোগ করবে।<br>
+      Order status <em>My Orders</em> section-এ দেখতে পাবে।
+    </div>
+    <div class="oc-btns">
+      <button class="oc-btn-primary" onclick="closeOrderConfirm(true)">📋 My Orders দেখো</button>
+      <button class="oc-btn-secondary" onclick="closeOrderConfirm(false)">✕ বন্ধ করো</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
