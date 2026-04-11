@@ -3349,10 +3349,10 @@ window.switchTab = (tab, el) => {
 /* ══════════════════════════════════════
    PROVIDERS
 ══════════════════════════════════════ */
-window.authGoogle    = async () => { clearErr(); try { await signInWithPopup(auth, googleProv);    } catch(e) { setErr(fe(e.code)); } };
-window.authFacebook  = async () => { clearErr(); try { await signInWithPopup(auth, facebookProv);  } catch(e) { setErr(fe(e.code)); } };
-window.authApple     = async () => { clearErr(); try { await signInWithPopup(auth, appleProv);     } catch(e) { setErr(fe(e.code)); } };
-window.authMicrosoft = async () => { clearErr(); try { await signInWithPopup(auth, microsoftProv); } catch(e) { setErr(fe(e.code)); } };
+window.authGoogle    = async () => { clearErr(); closeAuth(); try { await signInWithPopup(auth, googleProv);    } catch(e) { openAuth(); setErr(fe(e.code)); } };
+window.authFacebook  = async () => { clearErr(); closeAuth(); try { await signInWithPopup(auth, facebookProv);  } catch(e) { openAuth(); setErr(fe(e.code)); } };
+window.authApple     = async () => { clearErr(); closeAuth(); try { await signInWithPopup(auth, appleProv);     } catch(e) { openAuth(); setErr(fe(e.code)); } };
+window.authMicrosoft = async () => { clearErr(); closeAuth(); try { await signInWithPopup(auth, microsoftProv); } catch(e) { openAuth(); setErr(fe(e.code)); } };
 
 /* ══════════════════════════════════════
    EMAIL
@@ -3366,6 +3366,7 @@ window.authEmail = async () => {
   if (!email || !pass) { setErr('Email ও Password দিন।'); return; }
   const btn = document.getElementById('emailSubmitBtn');
   btn.textContent = '⏳ Please wait...'; btn.disabled = true;
+  closeAuth();
   try {
     if (isReg) {
       const cred = await createUserWithEmailAndPassword(auth, email, pass);
@@ -3373,7 +3374,7 @@ window.authEmail = async () => {
     } else {
       await signInWithEmailAndPassword(auth, email, pass);
     }
-  } catch(e) { setErr(fe(e.code)); }
+  } catch(e) { openAuth(); setErr(fe(e.code)); }
   finally { btn.textContent = isReg ? 'Create Account →' : 'Sign In with Email →'; btn.disabled = false; }
 };
 
@@ -3412,8 +3413,9 @@ window.verifyOTP = async () => {
   clearErr();
   const digits = [...document.querySelectorAll('.otp-digit')].map(i => i.value).join('');
   if (digits.length < 6) { setErr('৬ সংখ্যার OTP দিন।'); return; }
+  closeAuth();
   try { await confirmResult.confirm(digits); }
-  catch { setErr('OTP ভুল বা মেয়াদ শেষ।'); }
+  catch { openAuth(); setErr('OTP ভুল বা মেয়াদ শেষ।'); }
 };
 
 /* ══════════════════════════════════════
